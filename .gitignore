@@ -1,0 +1,6 @@
+/.idea/
+*.iml
+
+# プロジェクトの除外パス
+/target/
+/output/*
