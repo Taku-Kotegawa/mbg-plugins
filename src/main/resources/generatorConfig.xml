@@ -21,8 +21,7 @@
         </plugin>
 
         <!-- Modelのスーパークラス(extends)を追加する -->
-        <!--    <plugin type="plugins.SetSupperClassPlugin"/>-->
-
+        <plugin type="plugins.SetSupperClassPlugin"/>
 
         <!-- Modelにインタフェースを設定する -->
         <plugin type="plugins.BeanImplementationPlugin">
@@ -30,10 +29,10 @@
         </plugin>
 
         <!-- フィールド(プロパティ)のアノテーションを追加する -->
-        <!--    <plugin type="plugins.AddFieldAnotationPlugin"/>-->
+        <plugin type="plugins.AddFieldAnnotationPlugin"/>
 
         <!-- Modelの比較用メソッドを追加する-->
-        <!-- <plugin type="plugins.AddIsValueChangedMethodPlugin"/> -->
+        <plugin type="plugins.AddIsValueChangedMethodPlugin"/>
 
         <!-- Lombok対応 Modelクラスに@Dataを追加 -->
         <plugin type="plugins.LombokPlugin">
@@ -68,6 +67,16 @@
         その他の参考情報
         @see https://github.com/dcendents/mybatis-generator-plugins
         -->
+
+        <plugin type="plugins.ZTestPlugin">
+            <property name="test1" value="abc"/>
+            <property name="test2" value="abc"/>
+        </plugin>
+
+        <plugin type="plugins.CreateGenericInterfacePlugin">
+            <property name="interface" value="java.io.Serializable" />
+        </plugin>
+
 
         <!-- コメントの出力仕様 -->
         <commentGenerator>
