@@ -68,7 +68,13 @@ public class LombokPlugin extends PluginAdapter {
             TopLevelClass topLevelClass,
             IntrospectedTable introspectedTable
     ) {
-        addAnnotations(topLevelClass);
+
+        // 主キークラスは @Data だけ
+//        addAnnotations(topLevelClass);
+
+        topLevelClass.addImportedType(Annotations.DATA.javaType);
+        topLevelClass.addAnnotation(Annotations.DATA.asAnnotation());
+
         return true;
     }
 
@@ -145,10 +151,22 @@ public class LombokPlugin extends PluginAdapter {
      */
     private void addAnnotations(TopLevelClass topLevelClass) {
         for (Annotations annotation : annotations) {
+            if (callSuper(topLevelClass, annotation)) {
+                annotation.appendOptions("callSuper", "true");
+            }
             topLevelClass.addImportedType(annotation.javaType);
             topLevelClass.addAnnotation(annotation.asAnnotation());
         }
     }
+
+    private boolean callSuper(TopLevelClass topLevelClass, Annotations annotation) {
+        if (topLevelClass.getSuperClass().isPresent()) {
+            return Annotations.TO_STRING.equals(annotation)
+                    || Annotations.EQUALS_AND_HASH_CODE.equals(annotation);
+        }
+        return false;
+    }
+
 
     @Override
     public void setProperties(Properties properties) {

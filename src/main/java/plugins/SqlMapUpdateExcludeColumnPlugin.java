@@ -39,10 +39,10 @@ public class SqlMapUpdateExcludeColumnPlugin extends PluginAdapter {
         String columns = properties.getProperty(PROPERTY_EXCLUDE_COLUMNS);
 
         if (columns != null) {
-            StringTokenizer st = new StringTokenizer(columns, ", ", false);
+            StringTokenizer st = new StringTokenizer(columns, ",", false);
             while (st.hasMoreTokens()) {
                 String column = st.nextToken();
-                columnList.add(column);
+                columnList.add(column.trim());
             }
         }
 
@@ -50,50 +50,38 @@ public class SqlMapUpdateExcludeColumnPlugin extends PluginAdapter {
     }
 
     @Override
-    public boolean sqlMapUpdateByPrimaryKeySelectiveElementGenerated(
-            XmlElement element, IntrospectedTable introspectedTable) {
-
+    public boolean sqlMapUpdateByPrimaryKeySelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         removeColumn(element);
         return true;
     }
 
     @Override
-    public boolean sqlMapUpdateByPrimaryKeyWithBLOBsElementGenerated(
-            XmlElement element, IntrospectedTable introspectedTable) {
-
+    public boolean sqlMapUpdateByPrimaryKeyWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         removeColumn(element);
         return true;
     }
 
     @Override
-    public boolean sqlMapUpdateByPrimaryKeyWithoutBLOBsElementGenerated(
-            XmlElement element, IntrospectedTable introspectedTable) {
-
+    public boolean sqlMapUpdateByPrimaryKeyWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         removeColumn(element);
         return true;
     }
 
     @Override
-    public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element,
-                                                                  IntrospectedTable introspectedTable) {
-
+    public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         removeColumn(element);
         return true;
 
     }
 
     @Override
-    public boolean sqlMapUpdateByExampleWithBLOBsElementGenerated(XmlElement element,
-                                                                  IntrospectedTable introspectedTable) {
-
+    public boolean sqlMapUpdateByExampleWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         removeColumn(element);
         return true;
     }
 
     @Override
-    public boolean sqlMapUpdateByExampleWithoutBLOBsElementGenerated(XmlElement element,
-                                                                     IntrospectedTable introspectedTable) {
-
+    public boolean sqlMapUpdateByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         removeColumn(element);
         return true;
     }

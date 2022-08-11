@@ -1,11 +1,15 @@
 package plugins;
 
+
 import lombok.NoArgsConstructor;
+import org.mybatis.generator.api.FullyQualifiedTable;
+import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 
@@ -20,8 +24,12 @@ import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     public static final String INTERFACE = "interface";
+    public static final String STATUS_INTERFACE = "status_interface";
 
     private String interfaceName;
+
+    private String statusInterface;
+
     private Interface genericInterface;
 
     private final FullyQualifiedJavaType genericModel = new FullyQualifiedJavaType("T");
@@ -40,10 +48,15 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
     @Override
     public boolean validate(List<String> warnings) {
         interfaceName = properties.getProperty(INTERFACE);
+        statusInterface = properties.getProperty(STATUS_INTERFACE);
 
         String warning = "Property %s not set for plugin %s";
         if (!stringHasValue(interfaceName)) {
             warnings.add(String.format(warning, INTERFACE, this.getClass().getSimpleName()));
+            return false;
+        }
+        if (!stringHasValue(statusInterface)) {
+            warnings.add(String.format(warning, STATUS_INTERFACE, this.getClass().getSimpleName()));
             return false;
         }
 
@@ -292,6 +305,112 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     private void addClientSelectAll(Method method) {
         addGenericMethod(method, genericModel);
+    }
+
+
+
+
+    @Override
+    public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,
+                                                 IntrospectedTable introspectedTable) {
+
+        implementBean(
+                topLevelClass,
+                introspectedTable.getFullyQualifiedTable(),
+                introspectedTable);
+
+        topLevelClass.addMethod(addGetIdMethod(topLevelClass, introspectedTable));
+
+        return true;
+    }
+
+    @Override
+    public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass,
+                                                 IntrospectedTable introspectedTable) {
+
+//        implementBean(
+//                topLevelClass,
+//                introspectedTable.getFullyQualifiedTable(),
+//                introspectedTable);
+        return true;
+    }
+
+    @Override
+    public boolean modelRecordWithBLOBsClassGenerated(
+            TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+
+        implementBean(
+                topLevelClass,
+                introspectedTable.getFullyQualifiedTable(),
+                introspectedTable
+        );
+
+        return true;
+    }
+
+    protected void implementBean(TopLevelClass topLevelClass,
+                                 FullyQualifiedTable table, IntrospectedTable introspectedTable) {
+
+        FullyQualifiedJavaType type = new FullyQualifiedJavaType(statusInterface);
+
+        FullyQualifiedJavaType superClass = topLevelClass.getSuperClass().orElse(null);
+        FullyQualifiedJavaType id;
+        if (superClass == null) {
+            // フラットなモデル = 非複合主キー
+            id = introspectedTable.getPrimaryKeyColumns().get(0).getFullyQualifiedJavaType();
+        } else {
+            // 主キークラスをスーパークラスに持つ = 複合主キー
+            id = superClass;
+        }
+        type.addTypeArgument(id);
+
+        topLevelClass.addImportedType(type);
+        topLevelClass.addSuperInterface(type);
+
+    }
+
+    protected Method addGetIdMethod(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+
+        Method method = new Method("getId");
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.setName("getId");
+
+        FullyQualifiedJavaType superClass = topLevelClass.getSuperClass().orElse(null);
+        if (superClass == null) {
+            // フラットなモデル = 非複合主キー
+            // public ID getId() { return <primary_key_field_name>; }
+            IntrospectedColumn pkey = introspectedTable.getPrimaryKeyColumns().get(0);
+            method.setReturnType(pkey.getFullyQualifiedJavaType());
+            method.addBodyLine("return " + pkey.getJavaProperty() + ";");
+        } else {
+            // 主キークラスをスーパークラスに持つ = 複合主キー
+            // public PKEY_CLASS getId() { return new PRIMARY_KEY_CLASS(); }
+            method.setReturnType(superClass);
+
+            // getPrimaryKeyField1(), getPrimaryKeyField2()
+//            String idList = introspectedTable.getPrimaryKeyColumns().stream()
+//                    .map(x -> "get" + capitalize(x.getJavaProperty()) + "()").collect(Collectors.joining(", "));
+
+
+            method.addBodyLine(superClass.getShortName() + " superClass = new " + superClass.getShortName() + "();");
+
+            introspectedTable.getPrimaryKeyColumns().stream().forEach( x -> {
+                String field = capitalize(x.getJavaProperty());
+                method.addBodyLine("superClass.set" + field + "(get" + field + "());");
+            });
+
+            method.addBodyLine("return superClass;");
+
+        }
+
+        return method;
+    }
+
+    public static String capitalize(String str){
+        if(str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
 }

@@ -71,5 +71,7 @@ public class BeanImplementationPlugin extends PluginAdapter {
                                  FullyQualifiedTable table) {
         topLevelClass.addImportedType(bean);
         topLevelClass.addSuperInterface(bean);
+
+
     }
 }
