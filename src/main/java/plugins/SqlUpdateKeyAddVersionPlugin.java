@@ -106,16 +106,15 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
         }
     }
 
-
     @Override
     public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(
             Method method, Interface interfaze, IntrospectedTable introspectedTable) {
-
         if (versionColName == null) {
             findVersionColumn(introspectedTable, this.columnList);
         }
-
-        addMethodClient(method, interfaze, introspectedTable);
+        if (versionColName != null ) {
+            addMethodClient(method, interfaze, introspectedTable);
+        }
         return true;
     }
 
@@ -123,7 +122,9 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
     public boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(
             Method method, Interface interfaze, IntrospectedTable introspectedTable) {
 
-        addMethodClient(method, interfaze, introspectedTable);
+        if (versionColName != null ) {
+            addMethodClient(method, interfaze, introspectedTable);
+        }
         return true;
     }
 
@@ -131,10 +132,11 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
     public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(
             Method method, Interface interfaze, IntrospectedTable introspectedTable) {
 
-        addMethodClient(method, interfaze, introspectedTable);
+        if (versionColName != null ) {
+            addMethodClient(method, interfaze, introspectedTable);
+        }
         return true;
     }
-
 
     /**
      * SQLMapperXML定義にSQLを登録する
@@ -143,9 +145,6 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
      * @param introspectedTable introspectedTable
      */
     private void addMethodSqlMap(XmlElement element, IntrospectedTable introspectedTable) {
-
-        if (versionColName != null) {
-
             XmlElement addElement = new XmlElement(element);
             String newValue = getNewIdName(element.getAttributes().get(0).getValue());
             Attribute id = new Attribute("id", newValue);
@@ -161,7 +160,6 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
             replaceTextByElement(addElement, versionColName);
 
             addElementList.add(addElement);
-        }
     }
 
     /**
@@ -207,7 +205,7 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
                 }
             } else if (e instanceof TextElement) {
                 TextElement te = (TextElement) e;
-                if (te.getContent().contains(word)) {
+                if (te != null && te.getContent().contains(word)) {
                     String setWord = "  ";
                     if (te.getContent().contains("set " + versionColName)) {
                         setWord = "set ";
@@ -223,40 +221,52 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
 
     @Override
     public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        replaceTextByElement(element, versionColName);
+        if (versionColName != null ) {
+            replaceTextByElement(element, versionColName);
+        }
         return true;
     }
 
     @Override
     public boolean sqlMapUpdateByExampleWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        replaceTextByElement(element, versionColName);
+        if (versionColName != null ) {
+            replaceTextByElement(element, versionColName);
+        }
         return true;
     }
 
     @Override
     public boolean sqlMapUpdateByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        replaceTextByElement(element, versionColName);
+        if (versionColName != null ) {
+            replaceTextByElement(element, versionColName);
+        }
         return true;
     }
 
     @Override
     public boolean sqlMapUpdateByPrimaryKeySelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        replaceTextByElement(element, versionColName);
-        addMethodSqlMap(element, introspectedTable);
+        if (versionColName != null ) {
+            replaceTextByElement(element, versionColName);
+            addMethodSqlMap(element, introspectedTable);
+        }
         return true;
     }
 
     @Override
     public boolean sqlMapUpdateByPrimaryKeyWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        replaceTextByElement(element, versionColName);
-        addMethodSqlMap(element, introspectedTable);
+        if (versionColName != null ) {
+            replaceTextByElement(element, versionColName);
+            addMethodSqlMap(element, introspectedTable);
+        }
         return true;
     }
 
     @Override
     public boolean sqlMapUpdateByPrimaryKeyWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        replaceTextByElement(element, versionColName);
-        addMethodSqlMap(element, introspectedTable);
+        if (versionColName != null ) {
+            replaceTextByElement(element, versionColName);
+            addMethodSqlMap(element, introspectedTable);
+        }
         return true;
     }
 
