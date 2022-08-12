@@ -124,7 +124,7 @@
                 type="XMLMAPPER">
         </javaClientGenerator>
 
-        <table tableName="person2"/>
+        <table tableName="person2" schema="cms"/>
 
     </context>
 </generatorConfiguration>

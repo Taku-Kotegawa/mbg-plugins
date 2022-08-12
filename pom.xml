@@ -65,7 +65,20 @@
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
                 <version>1.4.0</version>
-
+                <executions>
+                    <execution>
+                        <id>a</id>
+                        <configuration>
+                            <configurationFile>${project.basedir}/src/main/resources/generatorConfig1.xml</configurationFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>b</id>
+                        <configuration>
+                            <configurationFile>${project.basedir}/src/main/resources/generatorConfig2.xml</configurationFile>
+                        </configuration>
+                    </execution>
+                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>com.example</groupId>
