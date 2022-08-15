@@ -9,6 +9,7 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -49,8 +50,10 @@ public class LombokPlugin extends PluginAdapter {
     @Override
     public boolean modelBaseRecordClassGenerated(
             TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable
-    ) {
+            IntrospectedTable introspectedTable) {
+
+
+
         addAnnotations(topLevelClass);
         return true;
     }
@@ -91,6 +94,7 @@ public class LombokPlugin extends PluginAdapter {
             TopLevelClass topLevelClass,
             IntrospectedTable introspectedTable
     ) {
+
         addAnnotations(topLevelClass);
         return true;
     }
@@ -150,7 +154,12 @@ public class LombokPlugin extends PluginAdapter {
      * @param topLevelClass the partially implemented model class
      */
     private void addAnnotations(TopLevelClass topLevelClass) {
+
         for (Annotations annotation : annotations) {
+
+            // AnnotationsのOptionsを初期化
+            annotation.removeAllOptions();
+
             if (callSuper(topLevelClass, annotation)) {
                 annotation.appendOptions("callSuper", "true");
             }
@@ -228,7 +237,6 @@ public class LombokPlugin extends PluginAdapter {
         private final FullyQualifiedJavaType javaType;
         private final List<String> options;
 
-
         Annotations(String paramName, String name, String className) {
             this.paramName = paramName;
             this.name = name;
@@ -264,6 +272,10 @@ public class LombokPlugin extends PluginAdapter {
             String keyPart = key.substring(key.indexOf(".") + 1);
             String valuePart = value.contains(",") ? String.format("{%s}", value) : value;
             this.options.add(String.format("%s = %s", keyPart, quote(valuePart)));
+        }
+
+        private void removeAllOptions() {
+            this.options.removeAll(this.options);
         }
 
         private String asAnnotation() {

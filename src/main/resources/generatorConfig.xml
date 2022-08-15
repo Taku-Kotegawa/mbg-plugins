@@ -29,9 +29,9 @@
 <!--        <plugin type="plugins.SetSupperClassPlugin"/>-->
 
         <!-- Modelにインタフェースを設定する -->
-<!--        <plugin type="plugins.BeanImplementationPlugin">-->
-<!--            <property name="interfaceName" value="java.io.Serializable"/>-->
-<!--        </plugin>-->
+        <plugin type="plugins.BeanImplementationPlugin">
+            <property name="interfaceName" value="java.io.Serializable"/>
+        </plugin>
 
         <!-- フィールド(プロパティ)のアノテーションを追加する -->
         <plugin type="plugins.AddFieldAnnotationPlugin"/>
@@ -79,10 +79,16 @@
         </plugin>
 
         <plugin type="plugins.CreateGenericInterfacePlugin">
-            <property name="interface" value="jp.co.stnet.cms.base.domain.model.MapperInterface" />
-            <property name="status_interface" value="jp.co.stnet.cms.base.domain.model.StatusInterface"/>
+            <property name="interface" value="jp.co.stnet.cms.base.infrastructure.mapper.VersionMapperInterface" />
+            <property name="status_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
+            <property name="target_table" value="account,variable"/>
         </plugin>
 
+        <plugin type="plugins.CreateGenericInterfacePlugin">
+            <property name="interface" value="jp.co.stnet.cms.base.infrastructure.mapper.MapperInterface" />
+            <property name="status_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
+            <property name="target_table" value="role,successful_authentication,failed_authentication,password_history,password_reissue_info,failed_password_reissue"/>
+        </plugin>
 
         <!-- コメントの出力仕様 -->
         <commentGenerator>
@@ -124,7 +130,7 @@
                 type="XMLMAPPER">
         </javaClientGenerator>
 
-        <table tableName="person2" schema="cms"/>
+        <table tableName="%" schema="cms"/>
 
     </context>
 </generatorConfiguration>

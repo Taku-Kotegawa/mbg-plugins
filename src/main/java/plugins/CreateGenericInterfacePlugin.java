@@ -25,10 +25,13 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     public static final String INTERFACE = "interface";
     public static final String STATUS_INTERFACE = "status_interface";
+    public static final String TARGET_TABLE = "target_table";
 
     private String interfaceName;
 
     private String statusInterface;
+
+    private List<String> targetTables;
 
     private Interface genericInterface;
 
@@ -49,6 +52,7 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
     public boolean validate(List<String> warnings) {
         interfaceName = properties.getProperty(INTERFACE);
         statusInterface = properties.getProperty(STATUS_INTERFACE);
+        String target_table = properties.getProperty(TARGET_TABLE);
 
         String warning = "Property %s not set for plugin %s";
         if (!stringHasValue(interfaceName)) {
@@ -59,6 +63,12 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
             warnings.add(String.format(warning, STATUS_INTERFACE, this.getClass().getSimpleName()));
             return false;
         }
+
+        if (!stringHasValue(target_table)) {
+            warnings.add(String.format(warning, TARGET_TABLE, this.getClass().getSimpleName()));
+            return false;
+        }
+        targetTables = Arrays.asList(target_table.replace(" ", "").split(","));
 
         init();
 
@@ -86,6 +96,18 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
         ids = new HashMap<>();
     }
 
+    /**
+     * テーブル名が対象かどうか
+     *
+     * @param tableName テーブル名
+     * @return true: 対象, false: 非対象
+     */
+    private boolean isTarget(String tableName) {
+        if (tableName == null) {
+            return false;
+        }
+        return targetTables.contains(tableName);
+    }
 
     /**
      * インターフェースファイルは手動で準備する前提で作成しない
@@ -103,6 +125,11 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 //    }
     @Override
     public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
+
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
+
         FullyQualifiedJavaType type = new FullyQualifiedJavaType(interfaceName);
         type.addTypeArgument(models.get(introspectedTable));
         type.addTypeArgument(examples.get(introspectedTable));
@@ -143,6 +170,12 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientCountByExampleMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+
+        // 対象でないテーブルの場合、処理を中断
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
+
         addClientCountByExample(method, introspectedTable);
         return true;
     }
@@ -155,6 +188,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientDeleteByExampleMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientDeleteByExample(method);
         return true;
     }
@@ -165,12 +201,18 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientDeleteByPrimaryKey(method, introspectedTable);
         return true;
     }
 
     @Override
     public boolean clientGeneralDeleteMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientDeleteByPrimaryKey(method, introspectedTable);
         return true;
     }
@@ -182,6 +224,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientInsertMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientInsert(method, introspectedTable);
         return true;
     }
@@ -193,6 +238,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientSelectByExampleWithBLOBs(method);
         return true;
     }
@@ -203,6 +251,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientSelectByExampleWithoutBLOBs(method);
         return true;
     }
@@ -214,6 +265,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientSelectByPrimaryKey(method);
         return true;
     }
@@ -225,6 +279,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientUpdateByExampleSelective(method);
         return true;
     }
@@ -236,6 +293,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientUpdateByExampleWithBLOBs(method);
         return true;
     }
@@ -246,6 +306,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientUpdateByExampleWithoutBLOBs(method);
         return true;
     }
@@ -256,6 +319,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientUpdateByPrimaryKeySelective(method);
         return true;
     }
@@ -266,6 +332,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientUpdateByPrimaryKeyWithBLOBs(method);
         return true;
     }
@@ -277,6 +346,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientUpdateByPrimaryKeyWithoutBLOBs(method);
         return true;
     }
@@ -288,6 +360,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientInsertSelectiveMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientInsertSelective(method);
         return true;
     }
@@ -299,6 +374,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean clientSelectAllMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
         addClientSelectAll(method);
         return true;
     }
@@ -308,11 +386,13 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
     }
 
 
-
-
     @Override
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,
                                                  IntrospectedTable introspectedTable) {
+
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
 
         implementBean(
                 topLevelClass,
@@ -328,16 +408,29 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
     public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass,
                                                  IntrospectedTable introspectedTable) {
 
-//        implementBean(
-//                topLevelClass,
-//                introspectedTable.getFullyQualifiedTable(),
-//                introspectedTable);
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
+
+        if (introspectedTable.getBaseColumns().isEmpty()) {
+            implementBean(
+                    topLevelClass,
+                    introspectedTable.getFullyQualifiedTable(),
+                    introspectedTable);
+
+            topLevelClass.addMethod(addGetIdMethod(topLevelClass, introspectedTable));
+        }
+
         return true;
     }
 
     @Override
     public boolean modelRecordWithBLOBsClassGenerated(
             TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+
+        if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
+            return true;
+        }
 
         implementBean(
                 topLevelClass,
@@ -394,7 +487,7 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
             method.addBodyLine(superClass.getShortName() + " superClass = new " + superClass.getShortName() + "();");
 
-            introspectedTable.getPrimaryKeyColumns().stream().forEach( x -> {
+            introspectedTable.getPrimaryKeyColumns().stream().forEach(x -> {
                 String field = capitalize(x.getJavaProperty());
                 method.addBodyLine("superClass.set" + field + "(get" + field + "());");
             });
@@ -406,8 +499,8 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
         return method;
     }
 
-    public static String capitalize(String str){
-        if(str == null || str.isEmpty()) {
+    public static String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
         return str.substring(0, 1).toUpperCase() + str.substring(1);
