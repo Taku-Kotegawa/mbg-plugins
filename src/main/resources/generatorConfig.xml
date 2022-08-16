@@ -29,8 +29,18 @@
 <!--        <plugin type="plugins.SetSupperClassPlugin"/>-->
 
         <!-- Modelにインタフェースを設定する -->
-        <plugin type="plugins.BeanImplementationPlugin">
-            <property name="interfaceName" value="java.io.Serializable"/>
+<!--        <plugin type="plugins.BeanImplementationPlugin">-->
+<!--            <property name="interfaceName" value="java.io.Serializable"/>-->
+<!--        </plugin>-->
+
+        <plugin type="plugins.BeanImplementation2Plugin">
+            <property name="interfaceName" value="jp.co.stnet.cms.base.domain.model.VersionInterface"/>
+            <property name="targetColumn" value="version"/>
+        </plugin>
+
+        <plugin type="plugins.BeanImplementation2Plugin">
+            <property name="interfaceName" value="jp.co.stnet.cms.base.domain.model.StatusInterface"/>
+            <property name="targetColumn" value="status"/>
         </plugin>
 
         <!-- フィールド(プロパティ)のアノテーションを追加する -->
