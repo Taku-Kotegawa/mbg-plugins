@@ -19,6 +19,9 @@
         <plugin type="plugins.SqlUpdateKeyAddVersionPlugin">
             <property name="versionColumns" value="version"/>
         </plugin>
+        <plugin type="plugins.SqlDeleteKeyAddVersionPlugin">
+            <property name="versionColumns" value="version"/>
+        </plugin>
 
         <!-- SQLMapperのUpdate命令から特定の項目を除外, excludeColumnsにテーブル項目名を指定, カンマ区切りで複数指定可能 -->
         <plugin type="plugins.SqlMapUpdateExcludeColumnPlugin">
