@@ -9,7 +9,6 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -53,7 +52,6 @@ public class LombokPlugin extends PluginAdapter {
             IntrospectedTable introspectedTable) {
 
 
-
         addAnnotations(topLevelClass);
         return true;
     }
@@ -73,11 +71,7 @@ public class LombokPlugin extends PluginAdapter {
     ) {
 
         // 主キークラスは @Data だけ
-//        addAnnotations(topLevelClass);
-
-        topLevelClass.addImportedType(Annotations.DATA.javaType);
-        topLevelClass.addAnnotation(Annotations.DATA.asAnnotation());
-
+        addAnnotations(topLevelClass, true);
         return true;
     }
 
@@ -148,14 +142,24 @@ public class LombokPlugin extends PluginAdapter {
         return false;
     }
 
+
+    private void addAnnotations(TopLevelClass topLevelClass) {
+        addAnnotations(topLevelClass, false);
+    }
+
     /**
      * Adds the lombok annotations' imports and annotations to the class
      *
      * @param topLevelClass the partially implemented model class
      */
-    private void addAnnotations(TopLevelClass topLevelClass) {
+    private void addAnnotations(TopLevelClass topLevelClass, boolean isPrimaryKeyClass) {
 
         for (Annotations annotation : annotations) {
+
+            if (isPrimaryKeyClass && annotation.equals(Annotations.BUILDER)) {
+                // 主キークラスには@Builderを付与しない
+                continue;
+            }
 
             // AnnotationsのOptionsを初期化
             annotation.removeAllOptions();
@@ -226,6 +230,7 @@ public class LombokPlugin extends PluginAdapter {
     private enum Annotations {
         DATA("data", "@Data", "lombok.Data"),
         BUILDER("builder", "@Builder", "lombok.Builder"),
+        SUPER_BUILDER("superBuilder", "@SuperBuilder", "lombok.experimental.SuperBuilder"),
         ALL_ARGS_CONSTRUCTOR("allArgsConstructor", "@AllArgsConstructor", "lombok.AllArgsConstructor"),
         NO_ARGS_CONSTRUCTOR("noArgsConstructor", "@NoArgsConstructor", "lombok.NoArgsConstructor"),
         ACCESSORS("accessors", "@Accessors", "lombok.experimental.Accessors"),
