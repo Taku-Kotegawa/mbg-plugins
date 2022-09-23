@@ -21,9 +21,9 @@
 <!--        </plugin>-->
 
         <!-- SQLMapperのUpdate命令から特定の項目を除外, excludeColumnsにテーブル項目名を指定, カンマ区切りで複数指定可能 -->
-<!--        <plugin type="plugins.SqlMapUpdateExcludeColumnPlugin">-->
-<!--            <property name="excludeColumns" value="created_date, created_by"/>-->
-<!--        </plugin>-->
+        <plugin type="plugins.SqlMapUpdateExcludeColumnPlugin">
+            <property name="excludeColumns" value="created_date, created_by"/>
+        </plugin>
 
         <!-- Modelのスーパークラス(extends)を追加する -->
 <!--        <plugin type="plugins.SetSupperClassPlugin"/>-->
@@ -42,29 +42,29 @@
         <!-- フィールド(プロパティ)のアノテーションを追加する -->
 <!--        <plugin type="plugins.AddFieldAnnotationPlugin"/>-->
 
-                <plugin type="plugins.AddLombokEqualsAndHashCodeExcludeFieldAnnotationPlugin">
-                    <property name="excludeField" value="version,createdBy,createdDate,lastModifiedBy,lastModifiedDate"/>
-                </plugin>
+<!--                <plugin type="plugins.AddLombokEqualsAndHashCodeExcludeFieldAnnotationPlugin">-->
+<!--                    <property name="excludeField" value="version,createdBy,createdDate,lastModifiedBy,lastModifiedDate"/>-->
+<!--                </plugin>-->
 
 
         <!-- Modelの比較用メソッドを追加する-->
 <!--        <plugin type="plugins.AddIsValueChangedMethodPlugin"/>-->
 
         <!-- Lombok対応 Modelクラスに@Dataを追加 -->
-        <plugin type="plugins.LombokPlugin">
-            <property name="builder" value="true"/>
-            <property name="superBuilder" value="true"/>
-            <property name="allArgsConstructor" value="true"/>
-            <property name="noArgsConstructor" value="true"/>
-            <property name="accessors" value="true"/>
-            <property name="toString" value="true"/>
-            <property name="EqualsAndHashCode" value="true"/>
-        </plugin>
+<!--        <plugin type="plugins.LombokPlugin">-->
+<!--            <property name="builder" value="true"/>-->
+<!--            <property name="superBuilder" value="true"/>-->
+<!--            <property name="allArgsConstructor" value="true"/>-->
+<!--            <property name="noArgsConstructor" value="true"/>-->
+<!--            <property name="accessors" value="true"/>-->
+<!--            <property name="toString" value="true"/>-->
+<!--            <property name="EqualsAndHashCode" value="true"/>-->
+<!--        </plugin>-->
 
-                <plugin type="plugins.ZTestPlugin">
-                    <property name="test1" value="abc"/>
-                    <property name="test2" value="abc"/>
-                </plugin>
+<!--                <plugin type="plugins.ZTestPlugin">-->
+<!--                    <property name="test1" value="abc"/>-->
+<!--                    <property name="test2" value="abc"/>-->
+<!--                </plugin>-->
 
         <!--        <plugin type="plugins.CreateGenericInterfacePlugin">-->
         <!--            <property name="interface" value="jp.co.stnet.cms.base.infrastructure.mapper.VersionMapperInterface" />-->
@@ -79,11 +79,11 @@
         <!--        </plugin>-->
 
 
-        <plugin type="plugins.CreateGenericInterface2IdPlugin">
-            <property name="interface" value="jp.co.stnet.cms.base.infrastructure.mapper.MapperInterface" />
-            <property name="status_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
-            <property name="target_table" value="role,successful_authentication,failed_authentication,password_history,password_reissue_info,failed_password_reissue"/>
-        </plugin>
+<!--        <plugin type="plugins.CreateGenericInterface2IdPlugin">-->
+<!--            <property name="interface" value="jp.co.stnet.cms.base.infrastructure.mapper.MapperInterface" />-->
+<!--            <property name="status_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>-->
+<!--            <property name="target_table" value="role,successful_authentication,failed_authentication,password_history,password_reissue_info,failed_password_reissue"/>-->
+<!--        </plugin>-->
 
         <!-- MyBatis Generator 標準プラグイン
         @see https://mybatis.org/generator/reference/plugins.html
@@ -149,7 +149,7 @@
                 type="XMLMAPPER">
         </javaClientGenerator>
 
-        <table tableName="t_account" schema="cms"/>
+        <table tableName="t_temp_file" schema="cms"/>
 
     </context>
 </generatorConfiguration>

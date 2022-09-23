@@ -6,10 +6,7 @@ import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.VisitableElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * update文で変更しないカラムを除外する。<br>
@@ -20,6 +17,24 @@ import java.util.StringTokenizer;
  * <property name="excludeColumns" value="created_at,created_by"/>
  * </plugin>
  * @code
+ *
+ * 対応すべきケース
+ * 1. 先頭
+ * update
+ *  set created_by = #{createdBy,jdbcType=VARCHAR},
+ *
+ * 2. 末尾
+ * update
+ *  set
+ *  xxx = xxxx,
+ *  created_by = #{createdBy,jdbcType=VARCHAR}
+ *
+ * 3. Selective
+ * update set
+ *  <if test="create_by !=null">
+ *      created_by = #{createdBy,jdbcType=VARCHAR},
+ *  </if>
+ *
  */
 public class SqlMapUpdateExcludeColumnPlugin extends PluginAdapter {
 
@@ -49,126 +64,121 @@ public class SqlMapUpdateExcludeColumnPlugin extends PluginAdapter {
         return true;
     }
 
-    @Override
-    public boolean sqlMapUpdateByPrimaryKeySelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        removeColumn(element);
-        return true;
-    }
-
+    // ノーマル(非Selective) ---------------------------------------------------
     @Override
     public boolean sqlMapUpdateByPrimaryKeyWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        removeColumn(element);
+        normal(element);
         return true;
     }
-
     @Override
     public boolean sqlMapUpdateByPrimaryKeyWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        removeColumn(element);
+        normal(element);
         return true;
-    }
-
-    @Override
-    public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        removeColumn(element);
-        return true;
-
     }
 
     @Override
     public boolean sqlMapUpdateByExampleWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        removeColumn(element);
+        normal(element);
         return true;
     }
 
     @Override
     public boolean sqlMapUpdateByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        removeColumn(element);
+        normal(element);
         return true;
     }
 
-    /**
-     * 引数で渡されたXmlElement(SqlMapperへの出力情報)から更新を除外する項目の有無を確認する。 項目名は引数で指定できる。
-     *
-     * @param xml     XmlElement
-     * @param columns チェックする項目名のリスト
-     * @return true:項目あり, false:項目なし
-     */
-    private boolean hasExcludeColumn(XmlElement xml, List<String> columns) {
+    // Selective -----------------------------------------------------------
 
-        if (xml == null || columns == null) {
-            return false;
-        }
+    @Override
+    public boolean sqlMapUpdateByPrimaryKeySelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+        selective(element);
+        return true;
+    }
 
-        for (VisitableElement e : xml.getElements()) {
-            if (e.getClass().equals(TextElement.class)) {
-                if (hasExcludeColumn((TextElement) e, columns)) {
-                    return true;
+    @Override
+    public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+        selective(element);
+        return true;
+
+    }
+
+    void normal(XmlElement element) {
+
+        Map<Integer, String> map = new LinkedHashMap<>();
+
+        for (int i = 0; i < element.getElements().size(); i++) {
+            VisitableElement ve = element.getElements().get(i);
+            if (ve instanceof TextElement) {
+                System.out.println(i + ": " + ((TextElement) ve).getContent() + "\t: " + getTarget(((TextElement) ve).getContent()));
+                String target = getTarget(((TextElement) ve).getContent());
+                if (target != null) {
+                    map.put(i, target);
                 }
             }
         }
-        return false;
+
+        for(Map.Entry<Integer, String> entry : map.entrySet()) {
+            deleteElement(element.getElements(), entry.getKey());
+            element.addElement(entry.getKey(), new TextElement(entry.getValue()));
+            System.out.println("Add! " + entry.getValue());
+        }
     }
 
-    /**
-     * 引数で渡されたtextElementから更新を除外する項目の有無を確認する。 項目名は引数で指定できる。
-     *
-     * @param textElement TextElement
-     * @param columns     除外する項目名のリスト
-     * @return true:項目あり, false:項目なし
-     */
-    private boolean hasExcludeColumn(TextElement textElement, List<String> columns) {
-        for (String column : columns) {
-            if (textElement.getContent().toLowerCase().trim().startsWith(column.toLowerCase() + " ")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 引数で渡されたXmlElementがtextElementを子供に持つか確認する。
-     *
-     * @param xml XmlElement
-     * @return true:持つ, false:持たない
-     */
-    private boolean hasTextElement(XmlElement xml) {
-
-        if (xml == null) {
-            return false;
-        }
-
-        for (VisitableElement e : xml.getElements()) {
-            if (e.getClass().equals(TextElement.class)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * xmlElementから除外する項目を削除する。 ネスト構造対応
-     *
-     * @param rootElement xmlElement
-     */
-    private void removeColumn(XmlElement rootElement) {
-
-        Iterator<VisitableElement> it = rootElement.getElements().iterator();
+    void deleteElement(List<VisitableElement> te, int x) {
+        ListIterator<VisitableElement> it = te.listIterator();
         while (it.hasNext()) {
-            VisitableElement e = it.next();
-            if (e.getClass().equals(XmlElement.class)) {
-                XmlElement xml = (XmlElement) e;
-                if (hasTextElement(xml)) {
-                    if (hasExcludeColumn(xml, columnList)) {
-                        it.remove();
+            VisitableElement ve = it.next();
+            if (it.nextIndex() == x + 1) {
+                System.out.println("Delete! " + ((TextElement)ve).getContent());
+                it.remove();
+                return;
+            }
+        }
+    }
+
+
+    private String getTarget(String content) {
+
+        boolean needComma = content.trim().endsWith(",");
+
+        for(String excludeColumn : columnList) {
+            if (content.trim().startsWith(excludeColumn.toLowerCase().trim()) && content.contains("jdbcType")) {
+                return excludeColumn.toLowerCase() + " = " + excludeColumn.toLowerCase() + (needComma ? "," : "");
+            } else if (content.trim().startsWith("set " + excludeColumn.toLowerCase().trim()) && content.contains("jdbcType")) {
+                return "set " + excludeColumn.toLowerCase() + " = " + excludeColumn.toLowerCase() + (needComma ? "," : "");
+            }
+        }
+        return null;
+    }
+
+    void selective(XmlElement element) {
+        Map<Integer, String> map = new LinkedHashMap<>();
+
+        for (int i = 0; i < element.getElements().size(); i++) {
+            VisitableElement ve = element.getElements().get(i);
+
+            if (ve instanceof XmlElement) {
+                XmlElement xe = (XmlElement) ve;
+                if ("set".equals(xe.getName())){
+
+                    Iterator<VisitableElement> it = xe.getElements().iterator();
+                    while(it.hasNext()) {
+                        VisitableElement ve2 = it.next();
+                        if (ve2 instanceof XmlElement) {
+                            for (VisitableElement ve3 : ((XmlElement) ve2).getElements()) {
+                                if (ve3 instanceof TextElement) {
+                                    if (getTarget(((TextElement) ve3).getContent()) != null) {
+                                        System.out.println("Selective Delete!" + ((TextElement) ve3).getContent());
+                                        it.remove();
+                                    }
+                                }
+                            }
+                        }
                     }
-                } else {
-                    removeColumn(xml);
-                }
-            } else if (e.getClass().equals(TextElement.class)) {
-                if (hasExcludeColumn((TextElement) e, columnList)) {
-                    it.remove();
                 }
             }
         }
     }
+
 }
