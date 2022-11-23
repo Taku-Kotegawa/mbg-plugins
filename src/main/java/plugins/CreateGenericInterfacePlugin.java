@@ -454,11 +454,6 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
         FullyQualifiedJavaType superClass = topLevelClass.getSuperClass().orElse(null);
         FullyQualifiedJavaType id;
 
-
-
-
-
-
         if (superClass == null) {
             // フラットなモデル = 非複合主キー
             id = introspectedTable.getPrimaryKeyColumns().get(0).getFullyQualifiedJavaType();
