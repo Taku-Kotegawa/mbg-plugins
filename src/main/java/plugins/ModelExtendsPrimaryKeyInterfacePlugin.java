@@ -16,7 +16,9 @@ import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static plugins.CreateGenericInterfacePlugin.capitalize;
 
 /**
- * このプラグインはModelにインタフェースを追加します。
+ * このプラグインはModelに対して、特殊なインタフェースをimplementsに追加し、getPrimaryKey()を作成します。<br>
+ * これにより常に同じメソッド名(getPrimaryKey())で主キーの値を取得できる様になります。<br>
+ * 複合主キーの場合、getPrimaryKey()はPrimaryKeyクラスを返します。
  * <p>
  *     注意事項<br>
  *     defaultModelType="flat"には対応していません。誤ったメソッドが追加されます。
@@ -38,7 +40,6 @@ import static plugins.CreateGenericInterfacePlugin.capitalize;
 public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
 
     private String addInterfaceName;
-    private FullyQualifiedJavaType addInterfaceFQJT;
 
     @Override
     public boolean validate(List<String> warnings) {
@@ -49,7 +50,6 @@ public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
             return false;
         }
 
-        addInterfaceFQJT = new FullyQualifiedJavaType(addInterfaceName);
         return true;
     }
 
@@ -68,13 +68,6 @@ public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
     }
 
     @Override
-    public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass,
-                                                 IntrospectedTable introspectedTable) {
-//        makeSerializable(topLevelClass, introspectedTable);
-        return true;
-    }
-
-    @Override
     public boolean modelRecordWithBLOBsClassGenerated(
             TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         makeSerializable(topLevelClass, introspectedTable);
@@ -88,6 +81,8 @@ public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
         if (introspectedTable.getPrimaryKeyColumns() == null || introspectedTable.getPrimaryKeyColumns().isEmpty()) {
             return;
         }
+
+        FullyQualifiedJavaType addInterfaceFQJT = new FullyQualifiedJavaType(addInterfaceName);
 
         // スーパークラス(複合主キークラス)の有無
         Optional<FullyQualifiedJavaType> pkClassOptional = topLevelClass.getSuperClass();
@@ -106,7 +101,8 @@ public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
         if (pkClassOptional.isPresent()) {
             // public <PK_CLASS> getPrimaryKey() {
             //    <PK_CLASS> superClass = new <PK_CLASS>();
-            //    superClass.setFieldXXX(fieldXXX);
+            //    superClass.setFieldXXX(getFieldXXX());
+            //    superClass.setFieldYYY(getFieldYYY());
             //    return superClass;
             // }
             FullyQualifiedJavaType pkClass = pkClassOptional.get();
@@ -119,10 +115,11 @@ public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
             method.addBodyLine("return superClass;");
 
         } else {
-            // public ID getPrimaryKey() { return <primary_key_field_name>; }
+            // public ID getPrimaryKey() { return getFieldXXX(); }
             IntrospectedColumn pkey = introspectedTable.getPrimaryKeyColumns().get(0);
             method.setReturnType(pkey.getFullyQualifiedJavaType());
-            method.addBodyLine("return " + pkey.getJavaProperty() + ";");
+            String field = capitalize(pkey.getJavaProperty());
+            method.addBodyLine("return get" + field + "();");
         }
         context.getCommentGenerator().addGeneralMethodComment(method, introspectedTable);
         topLevelClass.addMethod(method);

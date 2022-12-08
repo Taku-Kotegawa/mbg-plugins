@@ -155,6 +155,7 @@
         </javaClientGenerator>
 
         <table tableName="t_failed_authentication" schema="cms"/>
+        <table tableName="t_account" schema="cms"/>
 
     </context>
 </generatorConfiguration>
