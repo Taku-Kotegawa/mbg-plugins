@@ -78,9 +78,11 @@
         <!--            <property name="target_table" value="role,successful_authentication,failed_authentication,password_history,password_reissue_info,failed_password_reissue"/>-->
         <!--        </plugin>-->
 
-                <plugin type="plugins.ModelExtendsPrimaryKeyInterfacePlugin">
-                    <property name="interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
-                </plugin>
+
+        <!-- Modelに主キーの値を取得するメソッドと親インタフェースも追加 -->
+        <plugin type="plugins.ModelExtendsPrimaryKeyInterfacePlugin">
+            <property name="interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
+        </plugin>
 
 <!--        <plugin type="plugins.CreateGenericInterface2IdPlugin">-->
 <!--            <property name="interface" value="jp.co.stnet.cms.base.infrastructure.mapper.MapperInterface" />-->
@@ -152,7 +154,7 @@
                 type="XMLMAPPER">
         </javaClientGenerator>
 
-        <table tableName="t_temp_file" schema="cms"/>
+        <table tableName="t_failed_authentication" schema="cms"/>
 
     </context>
 </generatorConfiguration>

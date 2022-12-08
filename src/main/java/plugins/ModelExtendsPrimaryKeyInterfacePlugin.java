@@ -56,7 +56,7 @@ public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
     @Override
     public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass,
                                                  IntrospectedTable introspectedTable) {
-        makeSerializable(topLevelClass, introspectedTable);
+//        makeSerializable(topLevelClass, introspectedTable);
         return true;
     }
 
@@ -69,6 +69,11 @@ public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
 
     protected void makeSerializable(TopLevelClass topLevelClass,
                                     IntrospectedTable introspectedTable) {
+
+        // 主キーなしの場合処理しない
+        if (introspectedTable.getPrimaryKeyColumns() == null || introspectedTable.getPrimaryKeyColumns().isEmpty()) {
+            return;
+        }
 
         // スーパークラス(複合主キークラス)の有無
         Optional<FullyQualifiedJavaType> pkClassOptional = topLevelClass.getSuperClass();
@@ -96,11 +101,12 @@ public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
             method.addBodyLine(pkClass.getShortName() + " superClass = new " + pkClass.getShortName() + "();");
             introspectedTable.getPrimaryKeyColumns().forEach(x -> {
                 String field = capitalize(x.getJavaProperty());
-                method.addBodyLine("superClass.set" + field + "(" + x.getJavaProperty() + ");");
+                method.addBodyLine("superClass.set" + field + "(get" + field + "());");
             });
             method.addBodyLine("return superClass;");
 
         } else {
+
             // public ID getPrimaryKey() { return <primary_key_field_name>; }
             IntrospectedColumn pkey = introspectedTable.getPrimaryKeyColumns().get(0);
             method.setReturnType(pkey.getFullyQualifiedJavaType());
