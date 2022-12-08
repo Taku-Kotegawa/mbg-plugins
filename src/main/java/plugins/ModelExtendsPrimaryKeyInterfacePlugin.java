@@ -16,10 +16,24 @@ import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static plugins.CreateGenericInterfacePlugin.capitalize;
 
 /**
- * このプラグインは、Modelオブジェクトに指定したインタフェースを追加します。
- * <p>注意事項: defaultModelType="flat"には対応していません。誤ったメソッドが追加されます。</p>
- *
- * <p>interface: extedsするインタフェース名</p>
+ * このプラグインはModelにインタフェースを追加します。
+ * <p>
+ *     注意事項<br>
+ *     defaultModelType="flat"には対応していません。誤ったメソッドが追加されます。
+ * </p>
+ * <p>
+ *     指定可能なパラメータ<br>
+ *     interface: implementsするインタフェース名(必須)
+ * </p>
+ * <p>
+ *     前提条件<br>
+ *     以下のインタフェースを事前に準備しておくこと。<br>
+ *     <code>
+ *         public interface KeyInterface&lt;I&gt; {
+ *             I getPrimaryKey();
+ *         }
+ *     </code>
+ * </p>
  */
 public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
 
@@ -87,7 +101,6 @@ public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
         // add getPrimaryKey()
         Method method = new Method("getPrimaryKey");
         method.setVisibility(JavaVisibility.PUBLIC);
-        method.setName("getPrimaryKey");
 
         // 複合主キー or 単一キー により分岐
         if (pkClassOptional.isPresent()) {
@@ -106,7 +119,6 @@ public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
             method.addBodyLine("return superClass;");
 
         } else {
-
             // public ID getPrimaryKey() { return <primary_key_field_name>; }
             IntrospectedColumn pkey = introspectedTable.getPrimaryKeyColumns().get(0);
             method.setReturnType(pkey.getFullyQualifiedJavaType());
