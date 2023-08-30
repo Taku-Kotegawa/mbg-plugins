@@ -133,7 +133,10 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
         FullyQualifiedJavaType type = new FullyQualifiedJavaType(interfaceName);
         type.addTypeArgument(models.get(introspectedTable));
         type.addTypeArgument(examples.get(introspectedTable));
-        type.addTypeArgument(ids.get(introspectedTable));
+
+        if (ids.get(introspectedTable) != null) {
+            type.addTypeArgument(ids.get(introspectedTable));
+        }
 
         interfaze.addImportedType(type);
         interfaze.addSuperInterface(type);
@@ -404,7 +407,10 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
                 introspectedTable.getFullyQualifiedTable(),
                 introspectedTable);
 
-        topLevelClass.addMethod(addGetIdMethod(topLevelClass, introspectedTable));
+        Method method = addGetIdMethod(topLevelClass, introspectedTable);
+        if (method != null) {
+            topLevelClass.addMethod(method);
+        }
 
         return true;
     }
@@ -423,7 +429,10 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
                     introspectedTable.getFullyQualifiedTable(),
                     introspectedTable);
 
-            topLevelClass.addMethod(addGetIdMethod(topLevelClass, introspectedTable));
+            Method method = addGetIdMethod(topLevelClass, introspectedTable);
+            if (method != null) {
+                topLevelClass.addMethod(method);
+            }
         }
 
         return true;
@@ -456,7 +465,13 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
         if (superClass == null) {
             // フラットなモデル = 非複合主キー
-            id = introspectedTable.getPrimaryKeyColumns().get(0).getFullyQualifiedJavaType();
+
+            if (introspectedTable.getPrimaryKeyColumns().isEmpty()) {
+                return;
+            } else {
+                id = introspectedTable.getPrimaryKeyColumns().get(0).getFullyQualifiedJavaType();
+            }
+
         } else {
             // 主キークラスをスーパークラスに持つ = 複合主キー
             id = superClass;
@@ -478,7 +493,14 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
         if (superClass == null) {
             // フラットなモデル = 非複合主キー
             // public ID getId() { return <primary_key_field_name>; }
-            IntrospectedColumn pkey = introspectedTable.getPrimaryKeyColumns().get(0);
+
+            IntrospectedColumn pkey;
+            if (introspectedTable.getPrimaryKeyColumns().isEmpty()) {
+                return null;
+            } else {
+                pkey = introspectedTable.getPrimaryKeyColumns().get(0);
+            }
+
             method.setReturnType(pkey.getFullyQualifiedJavaType());
             method.addBodyLine("return " + pkey.getJavaProperty() + ";");
         } else {

@@ -7,7 +7,7 @@
     <groupId>com.example</groupId>
     <artifactId>mbg-plugins</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.0.20230831</version>
     <name>mbg-plugins</name>
     <description>MyBatis Generator Original Plugins</description>
 
