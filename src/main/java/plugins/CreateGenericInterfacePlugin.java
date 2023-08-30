@@ -131,13 +131,19 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
         }
 
         FullyQualifiedJavaType type = new FullyQualifiedJavaType(interfaceName);
+
+        System.out.println("models : " + models);
         type.addTypeArgument(models.get(introspectedTable));
+
+        System.out.println("examples : " + examples);
         type.addTypeArgument(examples.get(introspectedTable));
 
+        System.out.println("ids : " + ids);
         if (ids.get(introspectedTable) != null) {
             type.addTypeArgument(ids.get(introspectedTable));
         }
 
+        System.out.println("type : " + type);
         interfaze.addImportedType(type);
         interfaze.addSuperInterface(type);
 
@@ -261,6 +267,11 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
     public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         if (!isTarget(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName())) {
             return true;
+        }
+
+        // insert が無効だった場合
+        if (models.isEmpty()) {
+            models.put(introspectedTable, method.getReturnType().get().getTypeArguments().get(0));
         }
         addClientSelectByExampleWithoutBLOBs(method);
         return true;
