@@ -144,30 +144,6 @@ public class SqlDeleteKeyAddVersionPlugin extends PluginAdapter {
             addElementList.add(addElement);
     }
 
-    /**
-     * SQLXMLからwordを含む検索し、最初に一致したを返す。
-     *
-     * @param element element
-     * @param word    word
-     * @return 一致したword
-     */
-//    private String findTextByElement(XmlElement element, String word) {
-//        for (VisitableElement e : element.getElements()) {
-//            if (e instanceof XmlElement) {
-//                String content = findTextByElement((XmlElement) e, word);
-//                if (content != null) {
-//                    return content;
-//                }
-//            } else if (e instanceof TextElement) {
-//                TextElement te = (TextElement) e;
-//                if (te.getContent().contains(word)) {
-//                    String beforeContent = te.getContent();
-//                    return beforeContent.trim();
-//                }
-//            }
-//        }
-//        return null;
-//    }
 
     /**
      * バージョン管理用項目のUPDATE命令を書き換え(x = x + 1,)

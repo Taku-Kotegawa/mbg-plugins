@@ -7,7 +7,7 @@
     <groupId>com.example</groupId>
     <artifactId>mbg-plugins</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.20230831</version>
+    <version>1.0.20231021</version>
     <name>mbg-plugins</name>
     <description>MyBatis Generator Original Plugins</description>
 
@@ -16,12 +16,12 @@
         <dependency>
             <groupId>org.mybatis.generator</groupId>
             <artifactId>mybatis-generator-core</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis.generator</groupId>
             <artifactId>mybatis-generator-maven-plugin</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -33,13 +33,18 @@
             <artifactId>lombok</artifactId>
             <version>1.18.24</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.11.0</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.11.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -64,7 +69,7 @@
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
-                <version>1.4.0</version>
+                <version>1.4.2</version>
                 <executions>
                     <execution>
                         <id>a</id>
@@ -85,7 +90,7 @@
                         <artifactId>mbg-plugins</artifactId>
                         <version>1.0.20230831</version>
                         <scope>system</scope>
-                        <systemPath>${basedir}/target/mbg-plugins-1.0.20230831.jar</systemPath>
+                        <systemPath>${basedir}/target/mbg-plugins-${project.version}.jar</systemPath>
                     </dependency>
                 </dependencies>
 
