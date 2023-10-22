@@ -12,21 +12,46 @@ import java.util.*;
 
 
 /**
- * A MyBatis Generator plugin to use Lombok's annotations.
- * For example, use @Data annotation instead of getter ands setter.
+ * ModelにLombokアノテーションを追加し、setter/getterを削除する。
  * <p>
- * 一部うまく動作しない箇所を修正(T.Kotegawa)
- *
+ * 使い方
+ * <pre>
+ * {@code
+ * <plugin type="plugins.ModelLombokPlugin">
+ *     <property name="builder" value="true"/>
+ *     <property name="superBuilder" value="true"/>
+ *     <property name="allArgsConstructor" value="true"/>
+ *     <property name="noArgsConstructor" value="true"/>
+ *     <property name="accessors" value="true"/>
+ *     <property name="toString" value="true"/>
+ *     <property name="EqualsAndHashCode" value="true"/>
+ * </plugin>
+ * }
+ * </pre>
+ * <p>結果
+ * <pre>
+ * {@code
+ * @Data
+ * @Accessors
+ * @SuperBuilder
+ * @EqualsAndHashCode
+ * @Builder
+ * @AllArgsConstructor
+ * @ToString
+ * @NoArgsConstructor
+ * public class Employee implements Serializable
+ * }
+ * </pre>
  * @author Paolo Predonzani (http://softwareloop.com/)
  */
-public class LombokPlugin extends PluginAdapter {
+public class ModelLombokPlugin extends PluginAdapter {
 
     private final Collection<Annotations> annotations;
 
     /**
-     * LombokPlugin constructor
+     * ModelLombokPlugin constructor
      */
-    public LombokPlugin() {
+    public ModelLombokPlugin() {
         annotations = new LinkedHashSet<Annotations>(Annotations.values().length);
     }
 

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="mbg-plugins [-Dmybatis.generator.configurationFile=src\main\resources\generatorConfig3.xml...]" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
+  <configuration default="false" name="mbg-plugins [-Dmybatis.generator.configurationFile=src\main\resources\generatorConfig.xml...]" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings">
@@ -25,7 +25,7 @@
           </option>
           <option name="goals">
             <list>
-              <option value="-Dmybatis.generator.configurationFile=src\main\resources\generatorConfig3.xml" />
+              <option value="-Dmybatis.generator.configurationFile=src\main\resources\generatorConfig.xml" />
               <option value="mybatis-generator:generate" />
               <option value="-X" />
             </list>

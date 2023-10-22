@@ -42,24 +42,19 @@
         <!-- フィールド(プロパティ)のアノテーションを追加する -->
         <plugin type="plugins.ModelJsonFormatAnnotationPlugin"/>
 
-<!--                <plugin type="plugins.AddLombokEqualsAndHashCodeExcludeFieldAnnotationPlugin">-->
-<!--                    <property name="excludeField" value="version,createdBy,createdDate,lastModifiedBy,lastModifiedDate"/>-->
-<!--                </plugin>-->
-
-
         <!-- Modelの比較用メソッドを追加する-->
-<!--        <plugin type="plugins.AddIsValueChangedMethodPlugin"/>-->
+        <!-- <plugin type="plugins.ModelIsValueChangedMethodPlugin"/>-->
 
         <!-- Lombok対応 Modelクラスに@Dataを追加 -->
-<!--        <plugin type="plugins.LombokPlugin">-->
-<!--            <property name="builder" value="true"/>-->
-<!--            <property name="superBuilder" value="true"/>-->
-<!--            <property name="allArgsConstructor" value="true"/>-->
-<!--            <property name="noArgsConstructor" value="true"/>-->
-<!--            <property name="accessors" value="true"/>-->
-<!--            <property name="toString" value="true"/>-->
-<!--            <property name="EqualsAndHashCode" value="true"/>-->
-<!--        </plugin>-->
+<!--            <plugin type="plugins.ModelLombokPlugin">-->
+<!--                <property name="builder" value="true"/>-->
+<!--                <property name="superBuilder" value="true"/>-->
+<!--                <property name="allArgsConstructor" value="true"/>-->
+<!--                <property name="noArgsConstructor" value="true"/>-->
+<!--                <property name="accessors" value="true"/>-->
+<!--                <property name="toString" value="true"/>-->
+<!--                <property name="EqualsAndHashCode" value="true"/>-->
+<!--            </plugin>-->
 
 <!--                <plugin type="plugins.ZTestPlugin">-->
 <!--                    <property name="test1" value="abc"/>-->

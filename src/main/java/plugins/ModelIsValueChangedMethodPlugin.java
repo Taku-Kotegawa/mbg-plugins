@@ -24,13 +24,17 @@ import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 /**
- * 本機能はサンプル。汎用性は無いので使用する際は要件に合わせて修正すること
+ * ModelクラスにBean比較メソッドを追加
+ * <p>本機能はサンプル。汎用性は無いので使用する際は要件に合わせて修正すること
  *
- * Modelクラスにメソッドを追加
- * - isValueChanged : Modelの比較(WHOカラムを除く)
- * - isValueChangedSelective :
+ * <pre>
+ * {@code
+ * isValueChanged()
+ * isValueChangedSelective()
+ * }
+ * </pre>
  */
-public class AddIsValueChangedMethodPlugin extends PluginAdapter {
+public class ModelIsValueChangedMethodPlugin extends PluginAdapter {
 
     public boolean validate(List<String> warnings) {
         return true;
