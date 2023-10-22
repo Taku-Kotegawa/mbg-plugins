@@ -23,11 +23,25 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 import java.util.List;
 
 /**
- * フィールドアノテーションの追加
- * LocalDataTime -> @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm:ss")
- * LocalDate -> @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
+ * LocalDate,LocalDateTimeフィールドに@JsonFormatを追加
+ * <p>出力例
+ * <pre>
+ * {@code
+ * @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
+ * private LocalDate field_name;
+ *
+ * @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm:ss")
+ * private LocalDataTime field_name;
+ * }
+ * </pre>
+ * <p>使い方
+ * <pre>
+ * {@code
+ * <plugin type="plugins.ModelJsonFormatAnnotationPlugin"/>
+ * }
+ * </pre>
  */
-public class AddFieldAnnotationPlugin extends PluginAdapter {
+public class ModelJsonFormatAnnotationPlugin extends PluginAdapter {
 
     public boolean validate(List<String> warnings) {
         return true;
@@ -35,7 +49,7 @@ public class AddFieldAnnotationPlugin extends PluginAdapter {
 
     @Override
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,
-        IntrospectedTable introspectedTable) {
+                                                 IntrospectedTable introspectedTable) {
         addImport(topLevelClass);
 
         return true;
@@ -43,7 +57,7 @@ public class AddFieldAnnotationPlugin extends PluginAdapter {
 
     @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
-        IntrospectedTable introspectedTable) {
+                                              IntrospectedTable introspectedTable) {
         addImport(topLevelClass);
 
         return true;
@@ -51,7 +65,7 @@ public class AddFieldAnnotationPlugin extends PluginAdapter {
 
     @Override
     public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass,
-        IntrospectedTable introspectedTable) {
+                                                 IntrospectedTable introspectedTable) {
         addImport(topLevelClass);
 
         return true;
@@ -59,7 +73,7 @@ public class AddFieldAnnotationPlugin extends PluginAdapter {
 
     @Override
     public boolean modelRecordWithBLOBsClassGenerated(TopLevelClass topLevelClass,
-        IntrospectedTable introspectedTable) {
+                                                      IntrospectedTable introspectedTable) {
         addImport(topLevelClass);
 
         return true;
@@ -67,8 +81,8 @@ public class AddFieldAnnotationPlugin extends PluginAdapter {
 
     @Override
     public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass,
-        IntrospectedColumn introspectedColumn,
-        IntrospectedTable introspectedTable, ModelClassType modelClassType) {
+                                       IntrospectedColumn introspectedColumn,
+                                       IntrospectedTable introspectedTable, ModelClassType modelClassType) {
 
         // アノテーションJsonFormatを追記する
         if ("java.time.LocalDateTime"
@@ -80,10 +94,6 @@ public class AddFieldAnnotationPlugin extends PluginAdapter {
             field.addAnnotation(
                     "@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = \"yyyy/MM/dd\")");
         }
-
-//        if (!introspectedColumn.isNullable()) {
-//            field.addAnnotation("@NonNull");
-//        }
 
         return true;
     }
@@ -97,13 +107,6 @@ public class AddFieldAnnotationPlugin extends PluginAdapter {
         // アノテーションJsonFormatを追記するため、JsonFormatをインポートする
         addImport(topLevelClass,
                 new FullyQualifiedJavaType("com.fasterxml.jackson.annotation.JsonFormat"));
-        // 日付フォーマットの定数化のため、Constantをインポートする
-//        addImport(topLevelClass,
-//                new FullyQualifiedJavaType("com.example.common.constant.Constant"));
-
-//        addImport(topLevelClass,
-//                new FullyQualifiedJavaType("lombok.NonNull"));
-
     }
 
     /**

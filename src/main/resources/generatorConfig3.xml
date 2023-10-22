@@ -34,7 +34,7 @@
 <!--        </plugin>-->
 
         <!-- フィールド(プロパティ)のアノテーションを追加する -->
-        <plugin type="plugins.AddFieldAnnotationPlugin"/>
+        <plugin type="plugins.ModelJsonFormatAnnotationPlugin"/>
 
         <!-- Modelの比較用メソッドを追加する-->
 <!--        <plugin type="plugins.AddIsValueChangedMethodPlugin"/>-->

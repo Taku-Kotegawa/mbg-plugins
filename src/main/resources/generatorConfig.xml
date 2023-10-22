@@ -40,7 +40,7 @@
 
 
         <!-- フィールド(プロパティ)のアノテーションを追加する -->
-<!--        <plugin type="plugins.AddFieldAnnotationPlugin"/>-->
+        <plugin type="plugins.ModelJsonFormatAnnotationPlugin"/>
 
 <!--                <plugin type="plugins.AddLombokEqualsAndHashCodeExcludeFieldAnnotationPlugin">-->
 <!--                    <property name="excludeField" value="version,createdBy,createdDate,lastModifiedBy,lastModifiedDate"/>-->
@@ -154,8 +154,7 @@
                 type="XMLMAPPER">
         </javaClientGenerator>
 
-        <table tableName="t_failed_authentication" schema="cms"/>
-        <table tableName="t_account" schema="cms"/>
+        <table tableName="employee" schema="cms"/>
 
     </context>
 </generatorConfiguration>
