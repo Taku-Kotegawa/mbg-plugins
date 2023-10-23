@@ -14,22 +14,48 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
- * Mergeメソッドを追加する(Oracle限定)
+ * Mergeメソッドを追加する(Oracle、Postgres15以上)
  * <p>
  *
  * <pre>
  * {@code int merge(Model row);}
  * </pre>
  */
-public class MergeMethodOraclePlugin extends PluginAdapter {
+public class SqlMergeMethodPlugin extends PluginAdapter {
 
     private final boolean isSimple = false;
     private String tableName;
+    private String database;
+    private String insertMethod;
+    private String updateMethod;
+
+
 
     @Override
     public boolean validate(List<String> warnings) {
+
+        database = properties.getProperty("database");
+        insertMethod = properties.getProperty("insertMethod");
+        updateMethod = properties.getProperty("updateMethod");
+
+        if (database == null) {
+            database = "oracle";
+        }
+
+        if (insertMethod == null) {
+            insertMethod = "insert";
+        }
+
+        if (updateMethod == null) {
+            updateMethod = "updateByPrimaryKey";
+        }
+
         return true;
     }
+
+
+
+
 
     @Override
     public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
@@ -69,9 +95,9 @@ public class MergeMethodOraclePlugin extends PluginAdapter {
             XmlElement x;
             if (v instanceof XmlElement) {
                 x = (XmlElement) v;
-                if (x.getAttributes().get(0).getValue().equals("insert")) {
+                if (x.getAttributes().get(0).getValue().equals(insertMethod)) {
                     insertElements = x.getElements();
-                } else if (x.getAttributes().get(0).getValue().equals("updateByPrimaryKey")) {
+                } else if (x.getAttributes().get(0).getValue().equals(updateMethod)) {
                     updateElements = x.getElements();
                 }
             }
@@ -102,9 +128,11 @@ public class MergeMethodOraclePlugin extends PluginAdapter {
             i++;
         }
 
-        xmlElement.addElement(new TextElement(
-                "using (select 1 from dual) on (" + sb + ")"
-        ));
+        if (database.equals("oracle")) {
+            xmlElement.addElement(new TextElement("using (select 1 from dual) on (" + sb + ")"));
+        } else {
+            xmlElement.addElement(new TextElement("using (select 1) on (" + sb + ")"));
+        }
 
         // update
         xmlElement.addElement(new TextElement("when matched then"));

@@ -6,84 +6,106 @@
 
     <context id="context1" targetRuntime="MyBatis3" defaultModelType="conditional">
 
+        <!-- カスタムプラグインの設定 -->
+
         <!-- Modelクラス名のDtoを付加する-->
-        <!-- <plugin type="plugins.BeanClassNamePlugin"/> -->
+        <!--        <plugin type="plugins.BeanClassNamePlugin"/>-->
 
         <!-- Mapperクラス名のMapperをRepositoryに変更する。-->
-<!--        <plugin type="plugins.RenameMapperClassPlugin"/>-->
+        <!--        <plugin type="plugins.RenameMapperClassPlugin"/>-->
 
         <!-- Mapperクラス名のMapperをRepositoryに変更する。-->
-<!--        <plugin type="plugins.RenameMapperXmlPlugin"/>-->
+        <!--        <plugin type="plugins.RenameMapperXmlPlugin"/>-->
 
         <!-- 楽観的排他制御用メソッド追加 -->
-<!--        <plugin type="plugins.SqlUpdateKeyAddVersionPlugin">-->
-<!--            <property name="versionColumns" value="version"/>-->
-<!--        </plugin>-->
+        <plugin type="plugins.SqlUpdateKeyAddVersionPlugin">
+            <property name="versionColumns" value="version"/>
+        </plugin>
+
+        <!-- 楽観的排他制御用メソッド追加 -->
+        <plugin type="plugins.SqlDeleteKeyAddVersionPlugin">
+            <property name="versionColumns" value="version"/>
+        </plugin>
+
+        <!-- 楽観的排他制御用メソッド追加 -->
+        <plugin type="plugins.SqlUpdateKeyAddLastUpdatedPlugin">
+            <property name="lastUpdatedColumns" value="lastModifiedDate"/>
+        </plugin>
 
         <!-- SQLMapperのUpdate命令から特定の項目を除外, excludeColumnsにテーブル項目名を指定, カンマ区切りで複数指定可能 -->
-        <plugin type="plugins.SqlMapUpdateExcludeColumnPlugin">
+        <plugin type="plugins.SqlUpdateExcludeColumnPlugin">
             <property name="excludeColumns" value="created_date, created_by"/>
         </plugin>
 
         <!-- Modelのスーパークラス(extends)を追加する -->
-<!--        <plugin type="plugins.SetSupperClassPlugin"/>-->
+        <plugin type="plugins.ModelExtendsSupperClassPlugin"/>
 
         <!-- Modelにインタフェースを設定する -->
-<!--        <plugin type="plugins.BeanImplementationPlugin">-->
-<!--            <property name="interfaceName" value="java.io.Serializable"/>-->
-<!--        </plugin>-->
+        <plugin type="plugins.BeanImplementationPlugin">
+            <property name="interfaceName" value="java.io.Serializable"/>
+        </plugin>
 
-<!--        <plugin type="plugins.BeanImplementation2Plugin">-->
-<!--            <property name="interfaceName" value="jp.co.stnet.cms.base.domain.model.VersionInterface"/>-->
-<!--            <property name="targetColumn" value="version"/>-->
-<!--        </plugin>-->
+        <!-- 指定したカラムを持つModelにインタフェースを設定する -->
+        <plugin type="plugins.BeanImplementation2Plugin">
+            <property name="interfaceName" value="jp.co.stnet.cms.base.domain.model.VersionInterface"/>
+            <property name="targetColumn" value="version"/>
+        </plugin>
 
-
-        <!-- フィールド(プロパティ)のアノテーションを追加する -->
+        <!-- ModelのLocalDate,LocalDateTime型フィールドに@JsonFormatを追加する -->
         <plugin type="plugins.ModelJsonFormatAnnotationPlugin"/>
 
         <!-- Modelの比較用メソッドを追加する-->
-        <!-- <plugin type="plugins.ModelIsValueChangedMethodPlugin"/>-->
+        <plugin type="plugins.ModelIsValueChangedMethodPlugin"/>
 
-        <!-- Lombok対応 Modelクラスに@Dataを追加 -->
-<!--            <plugin type="plugins.ModelLombokPlugin">-->
-<!--                <property name="builder" value="true"/>-->
-<!--                <property name="superBuilder" value="true"/>-->
-<!--                <property name="allArgsConstructor" value="true"/>-->
-<!--                <property name="noArgsConstructor" value="true"/>-->
-<!--                <property name="accessors" value="true"/>-->
-<!--                <property name="toString" value="true"/>-->
-<!--                <property name="EqualsAndHashCode" value="true"/>-->
-<!--            </plugin>-->
+        <!-- ModelクラスにLombokのアノテーション(@Data等)を追加し、setter/getterを削除する -->
+        <plugin type="plugins.ModelLombokPlugin">
+            <property name="builder" value="true"/>
+            <property name="superBuilder" value="true"/>
+            <property name="allArgsConstructor" value="true"/>
+            <property name="noArgsConstructor" value="true"/>
+            <property name="accessors" value="true"/>
+            <property name="toString" value="true"/>
+            <property name="EqualsAndHashCode" value="true"/>
+        </plugin>
 
-<!--                <plugin type="plugins.ZTestPlugin">-->
-<!--                    <property name="test1" value="abc"/>-->
-<!--                    <property name="test2" value="abc"/>-->
-<!--                </plugin>-->
+        <!-- ModelとMapperにインターフェースを追加する -->
+        <plugin type="plugins.CreateGenericInterfacePlugin">
+            <property name="mapper_interface"
+                      value="jp.co.stnet.cms.base.infrastructure.mapper.VersionMapperInterface"/>
+            <property name="model_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
+            <property name="target_table" value="employee"/>
+        </plugin>
 
-        <!--        <plugin type="plugins.CreateGenericInterfacePlugin">-->
-        <!--            <property name="interface" value="jp.co.stnet.cms.base.infrastructure.mapper.VersionMapperInterface" />-->
-        <!--            <property name="status_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>-->
-        <!--            <property name="target_table" value="account,variable"/>-->
-        <!--        </plugin>-->
+        <!-- ModelとMapperにインターフェースを追加する -->
+        <plugin type="plugins.CreateGenericInterfacePlugin">
+            <property name="mapper_interface" value="jp.co.stnet.cms.base.infrastructure.mapper.MapperInterface"/>
+            <property name="model_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
+            <property name="target_table"
+                      value="role,successful_authentication,failed_authentication,password_history,password_reissue_info,failed_password_reissue"/>
+        </plugin>
 
-        <!--        <plugin type="plugins.CreateGenericInterfacePlugin">-->
-        <!--            <property name="interface" value="jp.co.stnet.cms.base.infrastructure.mapper.MapperInterface" />-->
-        <!--            <property name="status_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>-->
-        <!--            <property name="target_table" value="role,successful_authentication,failed_authentication,password_history,password_reissue_info,failed_password_reissue"/>-->
-        <!--        </plugin>-->
-
+        <!-- SQLのテーブル名からスキーマを削除 -->
+        <plugin type="plugins.NoSchemaSQLPlugin"/>
 
         <!-- Modelに主キーの値を取得するメソッドと親インタフェースも追加 -->
         <plugin type="plugins.ModelExtendsPrimaryKeyInterfacePlugin">
             <property name="interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
         </plugin>
 
-<!--        <plugin type="plugins.CreateGenericInterface2IdPlugin">-->
-<!--            <property name="interface" value="jp.co.stnet.cms.base.infrastructure.mapper.MapperInterface" />-->
-<!--            <property name="status_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>-->
-<!--            <property name="target_table" value="role,successful_authentication,failed_authentication,password_history,password_reissue_info,failed_password_reissue"/>-->
-<!--        </plugin>-->
+        <!-- MapperインタフェースにMergeメソッドを追加 -->
+        <plugin type="plugins.SqlMergeMethodPlugin">
+            <property name="database" value="oracle"/>
+        </plugin>
+
+        <!-- MapperインタフェースにTruncateメソッドを追加 -->
+        <plugin type="plugins.SqlTruncateMethodPlugin"/>
+
+        <!-- 動作確認用 -->
+        <!--        <plugin type="plugins.ZTestPlugin">-->
+        <!--            <property name="test1" value="abc"/>-->
+        <!--            <property name="test2" value="abc"/>-->
+        <!--        </plugin>-->
+
 
         <!-- MyBatis Generator 標準プラグイン
         @see https://mybatis.org/generator/reference/plugins.html
@@ -102,7 +124,7 @@
         <plugin type="org.mybatis.generator.plugins.VirtualPrimaryKeyPlugin"/>
 
         <!-- Mapper Interface に @Mapper を追加する -->
-        <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin" />
+        <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin"/>
 
         <!--
         その他の参考情報
@@ -149,7 +171,10 @@
                 type="XMLMAPPER">
         </javaClientGenerator>
 
+
+        <!-- 対象テーブルの指定 -->
         <table tableName="employee" schema="cms"/>
+
 
     </context>
 </generatorConfiguration>

@@ -24,9 +24,13 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Entityのスーパークラスを設定するプラグイン
+ * Modelにスーパークラスを設定するプラグイン
+ * <p>
+ * プロパティ<br>
+ *  - className = スーパークラス(フルパス)
+ *
  */
-public class SetSupperClassPlugin extends PluginAdapter {
+public class ModelExtendsSupperClassPlugin extends PluginAdapter {
 
     private String className = "com.example.model.SuperClass";
 

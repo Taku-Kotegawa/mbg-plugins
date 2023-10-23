@@ -28,7 +28,7 @@ import java.util.List;
  * }
  * </pre>
  */
-public class TruncateMethodPlugin extends PluginAdapter {
+public class SqlTruncateMethodPlugin extends PluginAdapter {
 
     @Override
     public boolean validate(List<String> warnings) {

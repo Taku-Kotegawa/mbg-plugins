@@ -17,15 +17,19 @@ import java.util.StringTokenizer;
 /**
  * 楽観的排他制御用のDeleteメソッドを追加する。
  * <p>
+ * <pre>
  * deleteByPrimaryKey -> deleteByPrimaryKeyAndVersion
+ * </pre>
  * <p>
  * パラメータに指定されたカラム名が存在する場合にメソッドを追加する。
  * パラメータには複数のカラム名が指定できるが、最初に見つかったカラムを利用する。
  * 指定するカラムは+1できる数値型を指定すること。
  *
- * @code <plugin type="plugins.SqlDeleteKeyAddVersionPlugin">
- * <property name="versionColumns" value="version, lock_version"/>
- * </plugin>
+ * <pre>
+ * {@code <plugin type="plugins.SqlDeleteKeyAddVersionPlugin">
+ *     <property name="versionColumns" value="version, lock_version"/>
+ * </plugin>}
+ * </pre>
  */
 public class SqlDeleteKeyAddVersionPlugin extends PluginAdapter {
 

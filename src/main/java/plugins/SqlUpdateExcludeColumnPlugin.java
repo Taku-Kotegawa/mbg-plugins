@@ -13,7 +13,7 @@ import java.util.*;
  * ex: 作成日時や作成者など新規登録時のみ登録されるカラムなど<br>
  * プロパティで除外するカラムを複数指定できる。(カンマ区切り)
  *
- * @code <plugin type="plugins.SqlMapUpdateExcludeColumnPlugin">
+ * @code <plugin type="plugins.SqlUpdateExcludeColumnPlugin">
  * <property name="excludeColumns" value="created_at,created_by"/>
  * </plugin>
  * @code
@@ -36,7 +36,7 @@ import java.util.*;
  *  </if>
  *
  */
-public class SqlMapUpdateExcludeColumnPlugin extends PluginAdapter {
+public class SqlUpdateExcludeColumnPlugin extends PluginAdapter {
 
     /**
      * 除外項目のプロパティ名
