@@ -107,6 +107,11 @@
         <!--        </plugin>-->
 
 
+        <!-- Modelにインタフェースを設定する -->
+        <plugin type="plugins.ExampleImplementPlugin">
+            <property name="interfaceName" value="java.io.Serializable"/>
+        </plugin>
+
         <!-- MyBatis Generator 標準プラグイン
         @see https://mybatis.org/generator/reference/plugins.html
         @see https://www.unitrust.co.jp/3620 -->
@@ -125,6 +130,8 @@
 
         <!-- Mapper Interface に @Mapper を追加する -->
         <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin"/>
+        
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
 
         <!--
         その他の参考情報
@@ -141,7 +148,7 @@
         <!-- データベース接続設定 -->
         <jdbcConnection
                 driverClass="org.postgresql.Driver"
-                connectionURL="jdbc:postgresql://localhost:5432/cms"
+                connectionURL="jdbc:postgresql://localhost:5432/mbg"
                 userId="admin"
                 password="admin">
             <property name="remarksReporting" value="true"/><!-- Oracleの場合のみ必要 -->
@@ -173,7 +180,7 @@
 
 
         <!-- 対象テーブルの指定 -->
-        <table tableName="employee" schema="cms"/>
+        <table tableName="normal_table" schema="public"/>
 
 
     </context>
