@@ -34,6 +34,7 @@ public class ExampleImplementPlugin extends PluginAdapter {
 
     @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        topLevelClass.addImportedType(new FullyQualifiedJavaType(interfaceName));
         topLevelClass.addSuperInterface(new FullyQualifiedJavaType(interfaceName));
         return true;
     }
