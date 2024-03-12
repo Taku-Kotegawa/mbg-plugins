@@ -37,8 +37,8 @@
             <property name="excludeColumns" value="created_date, created_by"/>
         </plugin>
 
-        <!-- Modelのスーパークラス(extends)を追加する -->
-        <plugin type="plugins.ModelExtendsSupperClassPlugin"/>
+        <!-- Modelのスーパークラス(extends)を追加する(PrimaryKEYクラスを上書きしてしまう) -->
+<!--        <plugin type="plugins.ModelExtendsSupperClassPlugin"/>-->
 
         <!-- Modelにインタフェースを設定する -->
 <!--        <plugin type="plugins.BeanImplementationPlugin">-->
