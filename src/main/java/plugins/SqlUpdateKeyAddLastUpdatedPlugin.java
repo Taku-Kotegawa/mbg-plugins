@@ -13,6 +13,7 @@ import java.util.ListIterator;
 import java.util.StringTokenizer;
 
 /**
+ * (開発中で未完成)
  * 最終更新日を使う楽観的排他制御用のUpdateメソッドを追加する
  * <p>
  * updateByPrimaryKey -> updateByPrimaryKeyAndLastUpdated

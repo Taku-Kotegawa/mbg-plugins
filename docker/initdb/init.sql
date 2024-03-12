@@ -43,34 +43,36 @@ comment on column normal_table.image_uuid is 'イメージファイルUUID';
 comment on column normal_table.allowed_ip is 'ログイン許可ipアドレス';
 comment on column normal_table.api_key is 'api key';
 
-
--- https://www.postgresql.jp/document/15/html/datatype-numeric.html
 drop table if exists nokey_with_blob cascade;
 create table nokey_with_blob (
-  field1 smallint
-, field2 integer
-, field3 bigint
-, field4 decimal(10, 3)
-, field5 numeric
-, field6 numeric(11)
-, field7 numeric(11, 4)
-, field8 smallserial
-, field9 serial
-, field10 bigserial
-, field11 money
-, field12 varchar(100)
-, field13 char(10)
-, field14 text
-, field15 bytea
-, field16 timestamp
-, field17 timestamp with time zone
-, field18 time
-, field19 time with time zone
-, field20 date
-, field21 interval
-, field22 boolean
-, field23 uuid
-
+	  field1 smallint
+	, field2 integer
+	, field3 bigint
+	, field4 decimal(10, 3)
+	, field5 numeric
+	, field6 numeric(11)
+	, field7 numeric(11, 4)
+	, field8 smallserial
+	, field9 serial
+	, field10 bigserial
+	, field11 money
+	, field12 varchar(100)
+	, field13 char(10)
+	, field14 text
+	, field15 bytea
+	, field16 timestamp
+	, field17 timestamp with time zone
+	, field18 time
+	, field19 time with time zone
+	, field20 date
+	, field21 interval
+	, field22 boolean
+	, field23 uuid
+	, version bigint default 1 not null
+	, last_modified_by varchar(255) not null
+	, last_modified_date timestamp(0) without time zone not null
+	, created_by varchar(255) not null
+	, created_date timestamp(0) without time zone not null
 );
 
 comment on table nokey_with_blob is '主キーなし、BLOB含む';
@@ -97,7 +99,11 @@ comment on column nokey_with_blob.field20 is 'date';
 comment on column nokey_with_blob.field21 is 'interval';
 comment on column nokey_with_blob.field22 is 'boolean';
 comment on column nokey_with_blob.field23 is 'uuid';
-
+comment on column nokey_with_blob.version is 'バージョン';
+comment on column nokey_with_blob.last_modified_by is '最終更新者';
+comment on column nokey_with_blob.last_modified_date is '最終更新日時';
+comment on column nokey_with_blob.created_by is '作成者';
+comment on column nokey_with_blob.created_date is '作成日時';
 
 drop table if exists complexkey_table cascade;
 create table complexkey_table (

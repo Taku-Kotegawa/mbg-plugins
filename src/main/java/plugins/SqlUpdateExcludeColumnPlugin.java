@@ -110,33 +110,14 @@ public class SqlUpdateExcludeColumnPlugin extends PluginAdapter {
         for (int i = 0; i < element.getElements().size(); i++) {
             VisitableElement ve = element.getElements().get(i);
             if (ve instanceof TextElement) {
-                System.out.println(i + ": " + ((TextElement) ve).getContent() + "\t: " + getTarget(((TextElement) ve).getContent()));
                 String target = getTarget(((TextElement) ve).getContent());
                 if (target != null) {
-                    map.put(i, target);
+                    element.getElements().remove(ve);
+                    element.addElement(i, new TextElement("  " + target));
                 }
             }
         }
-
-        for(Map.Entry<Integer, String> entry : map.entrySet()) {
-            deleteElement(element.getElements(), entry.getKey());
-            element.addElement(entry.getKey(), new TextElement(entry.getValue()));
-            System.out.println("Add! " + entry.getValue());
-        }
     }
-
-    void deleteElement(List<VisitableElement> te, int x) {
-        ListIterator<VisitableElement> it = te.listIterator();
-        while (it.hasNext()) {
-            VisitableElement ve = it.next();
-            if (it.nextIndex() == x + 1) {
-                System.out.println("Delete! " + ((TextElement)ve).getContent());
-                it.remove();
-                return;
-            }
-        }
-    }
-
 
     private String getTarget(String content) {
 
@@ -168,9 +149,10 @@ public class SqlUpdateExcludeColumnPlugin extends PluginAdapter {
                         if (ve2 instanceof XmlElement) {
                             for (VisitableElement ve3 : ((XmlElement) ve2).getElements()) {
                                 if (ve3 instanceof TextElement) {
-                                    if (getTarget(((TextElement) ve3).getContent()) != null) {
-                                        System.out.println("Selective Delete!" + ((TextElement) ve3).getContent());
-                                        it.remove();
+                                    String s = getTarget(((TextElement) ve3).getContent());
+                                    if (s != null) {
+                                        ((XmlElement) ve2).getElements().remove(ve3);
+                                        ((XmlElement) ve2).addElement(new TextElement(s));
                                     }
                                 }
                             }

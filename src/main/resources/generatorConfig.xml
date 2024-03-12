@@ -27,10 +27,10 @@
             <property name="versionColumns" value="version"/>
         </plugin>
 
-        <!-- 楽観的排他制御用メソッド追加 -->
-        <plugin type="plugins.SqlUpdateKeyAddLastUpdatedPlugin">
-            <property name="lastUpdatedColumns" value="lastModifiedDate"/>
-        </plugin>
+        <!-- 楽観的排他制御用メソッド追加(未完成) -->
+<!--        <plugin type="plugins.SqlUpdateKeyAddLastUpdatedPlugin">-->
+<!--            <property name="lastUpdatedColumns" value="lastModifiedDate"/>-->
+<!--        </plugin>-->
 
         <!-- SQLMapperのUpdate命令から特定の項目を除外, excludeColumnsにテーブル項目名を指定, カンマ区切りで複数指定可能 -->
         <plugin type="plugins.SqlUpdateExcludeColumnPlugin">
@@ -41,9 +41,9 @@
         <plugin type="plugins.ModelExtendsSupperClassPlugin"/>
 
         <!-- Modelにインタフェースを設定する -->
-        <plugin type="plugins.BeanImplementationPlugin">
-            <property name="interfaceName" value="java.io.Serializable"/>
-        </plugin>
+<!--        <plugin type="plugins.BeanImplementationPlugin">-->
+<!--            <property name="interfaceName" value="java.io.Serializable"/>-->
+<!--        </plugin>-->
 
         <!-- 指定したカラムを持つModelにインタフェースを設定する -->
         <plugin type="plugins.BeanImplementation2Plugin">
@@ -55,7 +55,7 @@
         <plugin type="plugins.ModelJsonFormatAnnotationPlugin"/>
 
         <!-- Modelの比較用メソッドを追加する-->
-        <plugin type="plugins.ModelIsValueChangedMethodPlugin"/>
+<!--        <plugin type="plugins.ModelIsValueChangedMethodPlugin"/>-->
 
         <!-- ModelクラスにLombokのアノテーション(@Data等)を追加し、setter/getterを削除する -->
         <plugin type="plugins.ModelLombokPlugin">
@@ -69,20 +69,20 @@
         </plugin>
 
         <!-- ModelとMapperにインターフェースを追加する -->
-        <plugin type="plugins.CreateGenericInterfacePlugin">
-            <property name="mapper_interface"
-                      value="jp.co.stnet.cms.base.infrastructure.mapper.VersionMapperInterface"/>
-            <property name="model_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
-            <property name="target_table" value="employee"/>
-        </plugin>
+<!--        <plugin type="plugins.CreateGenericInterfacePlugin">-->
+<!--            <property name="mapper_interface"-->
+<!--                      value="jp.co.stnet.cms.base.infrastructure.mapper.VersionMapperInterface"/>-->
+<!--            <property name="model_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>-->
+<!--            <property name="target_table" value="employee"/>-->
+<!--        </plugin>-->
 
         <!-- ModelとMapperにインターフェースを追加する -->
-        <plugin type="plugins.CreateGenericInterfacePlugin">
-            <property name="mapper_interface" value="jp.co.stnet.cms.base.infrastructure.mapper.MapperInterface"/>
-            <property name="model_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
-            <property name="target_table"
-                      value="role,successful_authentication,failed_authentication,password_history,password_reissue_info,failed_password_reissue"/>
-        </plugin>
+<!--        <plugin type="plugins.CreateGenericInterfacePlugin">-->
+<!--            <property name="mapper_interface" value="jp.co.stnet.cms.base.infrastructure.mapper.MapperInterface"/>-->
+<!--            <property name="model_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>-->
+<!--            <property name="target_table"-->
+<!--                      value="role,successful_authentication,failed_authentication,password_history,password_reissue_info,failed_password_reissue"/>-->
+<!--        </plugin>-->
 
         <!-- SQLのテーブル名からスキーマを削除 -->
         <plugin type="plugins.NoSchemaSQLPlugin"/>
@@ -94,7 +94,7 @@
 
         <!-- MapperインタフェースにMergeメソッドを追加 -->
         <plugin type="plugins.SqlMergeMethodPlugin">
-            <property name="database" value="oracle"/>
+            <property name="database" value="postgres"/>
         </plugin>
 
         <!-- MapperインタフェースにTruncateメソッドを追加 -->
@@ -181,6 +181,8 @@
 
         <!-- 対象テーブルの指定 -->
         <table tableName="normal_table" schema="public"/>
+        <table tableName="nokey_with_blob" schema="public"/>
+        <table tableName="complexkey_table" schema="public"/>
 
 
     </context>
