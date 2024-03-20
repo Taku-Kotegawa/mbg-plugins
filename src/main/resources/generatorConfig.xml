@@ -17,15 +17,22 @@
         <!-- Mapperクラス名のMapperをRepositoryに変更する。-->
         <!--        <plugin type="plugins.RenameMapperXmlPlugin"/>-->
 
-        <!-- 楽観的排他制御用メソッド追加 -->
-        <plugin type="plugins.SqlUpdateKeyAddVersionPlugin">
+        <!-- 楽観的排他制御用の更新番号をUpdate時に+1するSQLに変更-->
+        <plugin type="plugins.SqlUpdateVersionPlusOnePlugin">
             <property name="versionColumns" value="version"/>
+            <property name="maxVersionNum" value="99999"/>
         </plugin>
 
-        <!-- 楽観的排他制御用メソッド追加 -->
-        <plugin type="plugins.SqlDeleteKeyAddVersionPlugin">
-            <property name="versionColumns" value="version"/>
-        </plugin>
+        <!-- 楽観的排他制御用メソッド追加(未完成) -->
+<!--        <plugin type="plugins.SqlUpdateKeyAndVersionPlugin">-->
+<!--            <property name="versionColumns" value="version"/>-->
+<!--            <property name="maxVersionNum" value="9999"/>-->
+<!--        </plugin>-->
+
+        <!-- 楽観的排他制御用メソッド追加(未完成) -->
+<!--        <plugin type="plugins.SqlDeleteKeyAndVersionPlugin">-->
+<!--            <property name="versionColumns" value="version"/>-->
+<!--        </plugin>-->
 
         <!-- 楽観的排他制御用メソッド追加(未完成) -->
 <!--        <plugin type="plugins.SqlUpdateKeyAddLastUpdatedPlugin">-->
@@ -33,9 +40,9 @@
 <!--        </plugin>-->
 
         <!-- SQLMapperのUpdate命令から特定の項目を除外, excludeColumnsにテーブル項目名を指定, カンマ区切りで複数指定可能 -->
-        <plugin type="plugins.SqlUpdateExcludeColumnPlugin">
-            <property name="excludeColumns" value="created_date, created_by"/>
-        </plugin>
+<!--        <plugin type="plugins.SqlUpdateExcludeColumnPlugin">-->
+<!--            <property name="excludeColumns" value="created_date, created_by"/>-->
+<!--        </plugin>-->
 
         <!-- Modelのスーパークラス(extends)を追加する(PrimaryKEYクラスを上書きしてしまう) -->
 <!--        <plugin type="plugins.ModelExtendsSupperClassPlugin"/>-->
@@ -46,27 +53,27 @@
 <!--        </plugin>-->
 
         <!-- 指定したカラムを持つModelにインタフェースを設定する -->
-        <plugin type="plugins.BeanImplementation2Plugin">
-            <property name="interfaceName" value="jp.co.stnet.cms.base.domain.model.VersionInterface"/>
-            <property name="targetColumn" value="version"/>
-        </plugin>
+<!--        <plugin type="plugins.BeanImplementation2Plugin">-->
+<!--            <property name="interfaceName" value="jp.co.stnet.cms.base.domain.model.VersionInterface"/>-->
+<!--            <property name="targetColumn" value="version"/>-->
+<!--        </plugin>-->
 
         <!-- ModelのLocalDate,LocalDateTime型フィールドに@JsonFormatを追加する -->
-        <plugin type="plugins.ModelJsonFormatAnnotationPlugin"/>
+<!--        <plugin type="plugins.ModelJsonFormatAnnotationPlugin"/>-->
 
         <!-- Modelの比較用メソッドを追加する-->
 <!--        <plugin type="plugins.ModelIsValueChangedMethodPlugin"/>-->
 
         <!-- ModelクラスにLombokのアノテーション(@Data等)を追加し、setter/getterを削除する -->
-        <plugin type="plugins.ModelLombokPlugin">
-            <property name="builder" value="true"/>
-            <property name="superBuilder" value="true"/>
-            <property name="allArgsConstructor" value="true"/>
-            <property name="noArgsConstructor" value="true"/>
-            <property name="accessors" value="true"/>
-            <property name="toString" value="true"/>
-            <property name="EqualsAndHashCode" value="true"/>
-        </plugin>
+<!--        <plugin type="plugins.ModelLombokPlugin">-->
+<!--            <property name="builder" value="true"/>-->
+<!--            <property name="superBuilder" value="true"/>-->
+<!--            <property name="allArgsConstructor" value="true"/>-->
+<!--            <property name="noArgsConstructor" value="true"/>-->
+<!--            <property name="accessors" value="true"/>-->
+<!--            <property name="toString" value="true"/>-->
+<!--            <property name="EqualsAndHashCode" value="true"/>-->
+<!--        </plugin>-->
 
         <!-- ModelとMapperにインターフェースを追加する -->
 <!--        <plugin type="plugins.CreateGenericInterfacePlugin">-->
@@ -85,20 +92,20 @@
 <!--        </plugin>-->
 
         <!-- SQLのテーブル名からスキーマを削除 -->
-        <plugin type="plugins.NoSchemaSQLPlugin"/>
+<!--        <plugin type="plugins.NoSchemaSQLPlugin"/>-->
 
         <!-- Modelに主キーの値を取得するメソッドと親インタフェースも追加 -->
-        <plugin type="plugins.ModelExtendsPrimaryKeyInterfacePlugin">
-            <property name="interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
-        </plugin>
+<!--        <plugin type="plugins.ModelExtendsPrimaryKeyInterfacePlugin">-->
+<!--            <property name="interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>-->
+<!--        </plugin>-->
 
         <!-- MapperインタフェースにMergeメソッドを追加 -->
-        <plugin type="plugins.SqlMergeMethodPlugin">
-            <property name="database" value="postgres"/>
-        </plugin>
+<!--        <plugin type="plugins.SqlMergeMethodPlugin">-->
+<!--            <property name="database" value="postgres"/>-->
+<!--        </plugin>-->
 
         <!-- MapperインタフェースにTruncateメソッドを追加 -->
-        <plugin type="plugins.SqlTruncateMethodPlugin"/>
+<!--        <plugin type="plugins.SqlTruncateMethodPlugin"/>-->
 
         <!-- 動作確認用 -->
         <!--        <plugin type="plugins.ZTestPlugin">-->
@@ -108,14 +115,14 @@
 
 
         <!-- Modelにインタフェースを設定する -->
-        <plugin type="plugins.ExampleImplementPlugin">
-            <property name="interfaceName" value="java.io.Serializable"/>
-        </plugin>
+<!--        <plugin type="plugins.ExampleImplementPlugin">-->
+<!--            <property name="interfaceName" value="java.io.Serializable"/>-->
+<!--        </plugin>-->
 
         <!-- MyBatis Generator 標準プラグイン
         @see https://mybatis.org/generator/reference/plugins.html
         @see https://www.unitrust.co.jp/3620 -->
-        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <!--    <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>-->
         <!--    <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>-->
         <!--    <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>-->
         <!-- <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin" /> -->
@@ -130,7 +137,8 @@
 
         <!-- Mapper Interface に @Mapper を追加する -->
         <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin"/>
-        
+
+        <!-- XMLを常に上書きする -->
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
 
         <!--
@@ -183,7 +191,6 @@
         <table tableName="normal_table" schema="public"/>
         <table tableName="nokey_with_blob" schema="public"/>
         <table tableName="complexkey_table" schema="public"/>
-
 
     </context>
 </generatorConfiguration>
