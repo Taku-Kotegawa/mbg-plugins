@@ -4,6 +4,7 @@ import java.util.List;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+@Deprecated
 
 public class ModelAddImportInputStreamPlugin extends PluginAdapter {
 

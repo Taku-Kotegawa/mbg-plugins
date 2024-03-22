@@ -10,10 +10,13 @@ import java.util.List;
 import java.util.Properties;
 
 /**
+ * BeanImplementation2Pluginに移行
+ *
  * Modelクラスにインタフェースを追加する。
  * 指定するプロパティ
  * - interfaceName : 追加するインタフェース名(フルパス)
  */
+@Deprecated
 public class BeanImplementationPlugin extends PluginAdapter {
 
     private String interfaceName;

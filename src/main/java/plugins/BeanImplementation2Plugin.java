@@ -13,10 +13,12 @@ import java.util.List;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 
 /**
- * Modelクラスにインタフェースを追加する。
- * 指定するプロパティ
+ * 指定したカラムを持つテーブルを対象にModelクラスにインタフェースを追加する。
+ * <pre>
+ * プロパティ
  * - interfaceName : 追加するインタフェース名(フルパス)
- * - targetField : 指定されたカラムを持つテーブルを対象とする
+ * - targetColumn : 対象テーブルに含まれるカラム名
+ * </pre>
  */
 public class BeanImplementation2Plugin extends PluginAdapter {
 
@@ -55,17 +57,6 @@ public class BeanImplementation2Plugin extends PluginAdapter {
     }
 
     @Override
-    public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass,
-                                                 IntrospectedTable introspectedTable) {
-        if (isTarget(introspectedTable)) {
-            implementBean(
-                    topLevelClass,
-                    introspectedTable.getFullyQualifiedTable());
-        }
-        return true;
-    }
-
-    @Override
     public boolean modelRecordWithBLOBsClassGenerated(
             TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         if (isTarget(introspectedTable)) {
@@ -76,8 +67,7 @@ public class BeanImplementation2Plugin extends PluginAdapter {
         return true;
     }
 
-    protected void implementBean(TopLevelClass topLevelClass,
-                                 FullyQualifiedTable table) {
+    protected void implementBean(TopLevelClass topLevelClass, FullyQualifiedTable table) {
             topLevelClass.addImportedType(bean);
             topLevelClass.addSuperInterface(bean);
             System.out.println(table + " set " + bean);

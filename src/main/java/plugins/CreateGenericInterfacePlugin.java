@@ -13,11 +13,10 @@ import java.util.*;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 
 /**
- * ModelとMapperインタフェースにインタフェースを追加する。(インタフェースは事前準備)
+ * Mapperインタフェースにインタフェースを追加する。(インタフェースは事前準備)
  * <p>
  * プロパティ<br>
  *  - mapper_interface: Mapperに追加するインタフェース<br>
- *  - model_interface: モデルに追加するインタフェース<br>
  *  - target_table: 対象テーブル<br>
  *
  * <p>
@@ -61,10 +60,10 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
             warnings.add(String.format(warning, MAPPER_INTERFACE, this.getClass().getSimpleName()));
             return false;
         }
-        if (!stringHasValue(modelInterfaceName)) {
-            warnings.add(String.format(warning, MODEL_INTERFACE, this.getClass().getSimpleName()));
-            return false;
-        }
+//        if (!stringHasValue(modelInterfaceName)) {
+//            warnings.add(String.format(warning, MODEL_INTERFACE, this.getClass().getSimpleName()));
+//            return false;
+//        }
 
         if (!stringHasValue(target_table)) {
             warnings.add(String.format(warning, TARGET_TABLE, this.getClass().getSimpleName()));
@@ -429,6 +428,9 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
     protected void implementBean(TopLevelClass topLevelClass,
                                  FullyQualifiedTable table, IntrospectedTable introspectedTable) {
 
+        // 何もしない
+        if (true) { return; }
+
         FullyQualifiedJavaType type = new FullyQualifiedJavaType(modelInterfaceName);
 
         FullyQualifiedJavaType superClass = topLevelClass.getSuperClass().orElse(null);
@@ -456,9 +458,12 @@ public class CreateGenericInterfacePlugin extends PluginAdapter {
 
     protected Method addGetIdMethod(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 
-        Method method = new Method("getId");
+        // 何もしない
+        if (true) { return null; }
+
+        Method method = new Method("getPrimaryKey");
         method.setVisibility(JavaVisibility.PUBLIC);
-        method.setName("getId");
+        method.setName("getPrimaryKey");
 
         FullyQualifiedJavaType superClass = topLevelClass.getSuperClass().orElse(null);
         if (superClass == null) {

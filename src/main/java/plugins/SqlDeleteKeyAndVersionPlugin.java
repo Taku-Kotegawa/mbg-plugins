@@ -13,19 +13,26 @@ import java.util.ListIterator;
 import java.util.StringTokenizer;
 
 /**
- * 楽観的排他制御用のUpdateメソッドを追加する。Update時に +1 する更新番号項目を利用するタイプ
+ * SqlUpdateKeyAndVersionPluginと統合したため、廃止。
  * <p>
- * updateByPrimaryKey -> updateByPrimaryKeyAndVersion
+ * 楽観的排他制御用のDeleteメソッドを追加する。
+ * <p>
+ * <pre>
+ * deleteByPrimaryKey -> deleteByPrimaryKeyAndVersion
+ * </pre>
  * <p>
  * パラメータに指定されたカラム名が存在する場合にメソッドを追加する。
  * パラメータには複数のカラム名が指定できるが、最初に見つかったカラムを利用する。
- * 指定するカラムは+1できる数値型を指定すること。(最終更新日等の日時型の場合は別のプラグイン)
+ * 指定するカラムは+1できる数値型を指定すること。
  *
- * @code <plugin type="plugins.SqlUpdateKeyAddVersionPlugin">
- * <property name="versionColumns" value="version, lock_version"/>
- * </plugin>
+ * <pre>
+ * {@code <plugin type="plugins.SqlDeleteKeyAddVersionPlugin">
+ *     <property name="versionColumns" value="version, lock_version"/>
+ * </plugin>}
+ * </pre>
  */
-public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
+@Deprecated
+public class SqlDeleteKeyAndVersionPlugin extends PluginAdapter {
 
     /**
      * プロパティ名
@@ -107,8 +114,7 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
     }
 
     @Override
-    public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(
-            Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+    public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         if (versionColName == null) {
             findVersionColumn(introspectedTable, this.columnList);
         }
@@ -118,25 +124,6 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
         return true;
     }
 
-    @Override
-    public boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(
-            Method method, Interface interfaze, IntrospectedTable introspectedTable) {
-
-        if (versionColName != null ) {
-            addMethodClient(method, interfaze, introspectedTable);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(
-            Method method, Interface interfaze, IntrospectedTable introspectedTable) {
-
-        if (versionColName != null ) {
-            addMethodClient(method, interfaze, introspectedTable);
-        }
-        return true;
-    }
 
     /**
      * SQLMapperXML定義にSQLを登録する
@@ -157,35 +144,11 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
             String whereClause = " and " + versionColName + " = #{" + versionColName + ",jdbcType=" + versionColumn.getJdbcTypeName() + "}";
             addElement.getElements().add(new TextElement(whereClause));
 
-            replaceTextByElement(addElement, versionColName);
+//            replaceTextByElement(addElement, versionColName);
 
             addElementList.add(addElement);
     }
 
-    /**
-     * SQLXMLからwordを含む検索し、最初に一致したを返す。
-     *
-     * @param element element
-     * @param word    word
-     * @return 一致したword
-     */
-//    private String findTextByElement(XmlElement element, String word) {
-//        for (VisitableElement e : element.getElements()) {
-//            if (e instanceof XmlElement) {
-//                String content = findTextByElement((XmlElement) e, word);
-//                if (content != null) {
-//                    return content;
-//                }
-//            } else if (e instanceof TextElement) {
-//                TextElement te = (TextElement) e;
-//                if (te.getContent().contains(word)) {
-//                    String beforeContent = te.getContent();
-//                    return beforeContent.trim();
-//                }
-//            }
-//        }
-//        return null;
-//    }
 
     /**
      * バージョン管理用項目のUPDATE命令を書き換え(x = x + 1,)
@@ -218,53 +181,10 @@ public class SqlUpdateKeyAddVersionPlugin extends PluginAdapter {
         return false;
     }
 
-
     @Override
-    public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+    public boolean sqlMapDeleteByPrimaryKeyElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         if (versionColName != null ) {
-            replaceTextByElement(element, versionColName);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean sqlMapUpdateByExampleWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        if (versionColName != null ) {
-            replaceTextByElement(element, versionColName);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean sqlMapUpdateByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        if (versionColName != null ) {
-            replaceTextByElement(element, versionColName);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean sqlMapUpdateByPrimaryKeySelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        if (versionColName != null ) {
-            replaceTextByElement(element, versionColName);
-            addMethodSqlMap(element, introspectedTable);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean sqlMapUpdateByPrimaryKeyWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        if (versionColName != null ) {
-            replaceTextByElement(element, versionColName);
-            addMethodSqlMap(element, introspectedTable);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean sqlMapUpdateByPrimaryKeyWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        if (versionColName != null ) {
-            replaceTextByElement(element, versionColName);
+//            replaceTextByElement(element, versionColName);
             addMethodSqlMap(element, introspectedTable);
         }
         return true;

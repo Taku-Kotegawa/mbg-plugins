@@ -8,6 +8,7 @@ import org.mybatis.generator.api.PluginAdapter;
 /**
  * Modelクラス名を変更する(テーブル名に"Dto"を付加)
  */
+@Deprecated
 public class BeanClassNamePlugin extends PluginAdapter {
 
     public boolean validate(List<String> warnings) {

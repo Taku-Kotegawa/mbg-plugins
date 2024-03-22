@@ -19,6 +19,7 @@ import java.util.StringTokenizer;
  * sqlStaetment: mybatisのGeneratedKeyプロパティの設定と同じ
  * identity: mybatisのGeneratedKeyプロパティの設定と同じ
  */
+@Deprecated
 public class SetGeneratedKeyPlugin extends PluginAdapter {
 
     /**

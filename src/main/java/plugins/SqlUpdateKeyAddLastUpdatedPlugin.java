@@ -26,6 +26,7 @@ import java.util.StringTokenizer;
  * <property name="lastUpdatedColumns" value="lastUpdated, LastUpdatedAt"/>
  * </plugin>
  */
+@Deprecated
 public class SqlUpdateKeyAddLastUpdatedPlugin extends PluginAdapter {
 
     /**

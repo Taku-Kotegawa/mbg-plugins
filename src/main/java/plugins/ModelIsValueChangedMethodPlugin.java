@@ -34,6 +34,7 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
  * }
  * </pre>
  */
+@Deprecated
 public class ModelIsValueChangedMethodPlugin extends PluginAdapter {
 
     public boolean validate(List<String> warnings) {

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Truncate 命令を追加する
+ * Truncateメソッドを追加する
  * <p>
  *
  * <pre>

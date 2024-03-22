@@ -5,10 +5,8 @@ import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.mybatis.generator.config.Context;
 
 import java.util.List;
-import java.util.Properties;
 
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 

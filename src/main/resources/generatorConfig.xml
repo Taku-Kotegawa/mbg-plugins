@@ -20,16 +20,16 @@
         <!-- 楽観的排他制御用の更新番号をUpdate時に+1するSQLに変更-->
         <plugin type="plugins.SqlUpdateVersionPlusOnePlugin">
             <property name="versionColumns" value="version"/>
-            <property name="maxVersionNum" value="99999"/>
+            <property name="maxVersionNum" value="99999999"/>
+            <property name="excludeTable" value="normal_table"/>
         </plugin>
 
-        <!-- 楽観的排他制御用メソッド追加(未完成) -->
+        <!-- 楽観的排他制御用メソッド追加 -->
 <!--        <plugin type="plugins.SqlUpdateKeyAndVersionPlugin">-->
 <!--            <property name="versionColumns" value="version"/>-->
-<!--            <property name="maxVersionNum" value="9999"/>-->
 <!--        </plugin>-->
 
-        <!-- 楽観的排他制御用メソッド追加(未完成) -->
+        <!-- 楽観的排他制御用メソッド追加(SqlUpdateKeyAndVersionPluginに統合) -->
 <!--        <plugin type="plugins.SqlDeleteKeyAndVersionPlugin">-->
 <!--            <property name="versionColumns" value="version"/>-->
 <!--        </plugin>-->
@@ -191,6 +191,8 @@
         <table tableName="normal_table" schema="public"/>
         <table tableName="nokey_with_blob" schema="public"/>
         <table tableName="complexkey_table" schema="public"/>
+
+
 
     </context>
 </generatorConfiguration>

@@ -9,10 +9,7 @@ import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.VisitableElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * 楽観的排他制御用の更新番号項目をUpdate時に +1 するSQLに書き換える
@@ -33,10 +30,19 @@ public class SqlUpdateVersionPlusOnePlugin extends PluginAdapter {
     private static final String PROPERTY_VERSION_COLUMNS = "versionColumns";
     private static final String PROPERTY_MAX_VERSION_NUM = "maxVersionNum";
 
+    private static final String PROPERTY_EXCLUDE_TABLE = "excludeTable";
+
     /**
      * バージョンカラムのリスト
      */
     private final List<String> columnList = new ArrayList<>();
+
+    /**
+     * 対象外テーブルのリスト
+     */
+    private List<String> excludeTableList = new ArrayList<>();
+
+
     /**
      * SQLMapper格納場所
      */
@@ -46,7 +52,6 @@ public class SqlUpdateVersionPlusOnePlugin extends PluginAdapter {
      */
     private String versionColName;
     private String maxVersionNum = "99999999";
-
     private IntrospectedColumn versionColumn;
 
     @Override
@@ -66,9 +71,19 @@ public class SqlUpdateVersionPlusOnePlugin extends PluginAdapter {
             maxVersionNum = num;
         }
 
+        String s = properties.getProperty(PROPERTY_EXCLUDE_TABLE);
+        if (s != null) {
+            excludeTableList = Arrays.asList(s.split(","));
+        }
+
         return true;
     }
 
+
+    private boolean isTarget(IntrospectedTable introspectedTable) {
+        String tableName = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
+        return !excludeTableList.contains(tableName);
+    }
 
     /**
      * 指定されたカラムがテーブルに存在するか確認し、最初に見つかったものを返す。
@@ -79,6 +94,11 @@ public class SqlUpdateVersionPlusOnePlugin extends PluginAdapter {
     private void findVersionColumn(IntrospectedTable introspectedTable, List<String> columnList) {
         versionColumn = null;
         versionColName = null;
+
+        if (!isTarget(introspectedTable)) {
+            return;
+        }
+
         List<IntrospectedColumn> list = new ArrayList<>();
         list.addAll(introspectedTable.getPrimaryKeyColumns());
         list.addAll(introspectedTable.getBaseColumns());
@@ -98,10 +118,7 @@ public class SqlUpdateVersionPlusOnePlugin extends PluginAdapter {
     public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(
             Method method, Interface interfaze, IntrospectedTable introspectedTable) {
 
-        if (versionColName == null) {
-            findVersionColumn(introspectedTable, this.columnList);
-        }
-
+        findVersionColumn(introspectedTable, this.columnList);
         return true;
     }
 
@@ -196,5 +213,69 @@ public class SqlUpdateVersionPlusOnePlugin extends PluginAdapter {
         }
         return true;
     }
+//
+//    @Override
+//    public boolean sqlMapInsertElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+//        findVersionColumn(introspectedTable, columnList);
+//        replaceVersionSetOneForInsert(element, introspectedTable);
+//        return super.sqlMapInsertElementGenerated(element, introspectedTable);
+//    }
+//
+//    @Override
+//    public boolean sqlMapInsertSelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+//        findVersionColumn(introspectedTable, columnList);
+//
+//        // #{version,jdbcType=BIGINT}
+//        String word = "#{" + versionColumn.getActualColumnName() + ",jdbcType=" + versionColumn.getJdbcTypeName() + "}";
+//
+//
+//        if (versionColName != null) {
+//            replaceVersionSetOneForInsertSelective(element, word);
+//        }
+//        return super.sqlMapInsertSelectiveElementGenerated(element, introspectedTable);
+//    }
+//
+//    private void replaceVersionSetOneForInsert(XmlElement element, IntrospectedTable introspectedTable) {
+//        if (versionColName != null) {
+//
+//            // #{version,jdbcType=BIGINT}
+//            String a = "#{" + versionColumn.getActualColumnName() + ",jdbcType=" + versionColumn.getJdbcTypeName() + "}";
+//
+//            ListIterator<VisitableElement> it = element.getElements().listIterator();
+//
+//            while (it.hasNext()) {
+//                VisitableElement ve = it.next();
+//                if (ve instanceof TextElement) {
+//                    String b = ((TextElement) ve).getContent();
+//                    if(b.contains(a)) {
+//                        String c = b.replace(a, "1");
+//                        it.set( new TextElement(c));
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    private boolean replaceVersionSetOneForInsertSelective(XmlElement element, String word) {
+//
+//            ListIterator<VisitableElement> it = element.getElements().listIterator();
+//            while (it.hasNext()) {
+//                VisitableElement e = it.next();
+//                if (e instanceof XmlElement) {
+//                    boolean replaced = replaceVersionSetOneForInsertSelective((XmlElement) e, word);
+//                    if (replaced) {
+//                        return true;
+//                    }
+//                } else if (e instanceof TextElement) {
+//                    TextElement te = (TextElement) e;
+//                    if (te.getContent().contains(word)) {
+//                        String c = te.getContent().replace(word, "1");
+//                        it.set( new TextElement(c));
+//                        return true;
+//                    }
+//                }
+//            }
+//            return false;
+//    }
 
 }

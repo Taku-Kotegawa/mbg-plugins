@@ -20,6 +20,7 @@ import org.mybatis.generator.api.PluginAdapter;
 /**
  * マッパークラス名の末尾を Mapper から Repository に変更するプラグイン
  */
+@Deprecated
 public class RenameMapperClassPlugin extends PluginAdapter {
 
     public boolean validate(List<String> warnings) {

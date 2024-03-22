@@ -16,26 +16,24 @@ import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static plugins.CreateGenericInterfacePlugin.capitalize;
 
 /**
- * このプラグインはModelに対して、特殊なインタフェースをimplementsに追加し、getPrimaryKey()を作成します。<br>
- * これにより常に同じメソッド名(getPrimaryKey())で主キーの値を取得できる様になります。<br>
+ * このプラグインはModelに対して、特殊なインタフェースをimplementsに追加し、getPrimaryKey()を作成する。
+ *
+ * <pre>
+ * これにより常に同じメソッド名(getPrimaryKey())で主キーの値を取得できる様になります。
  * 複合主キーの場合、getPrimaryKey()はPrimaryKeyクラスを返します。
- * <p>
- *     注意事項<br>
- *     defaultModelType="flat"には対応していません。誤ったメソッドが追加されます。
- * </p>
- * <p>
- *     指定可能なパラメータ<br>
- *     interface: implementsするインタフェース名(必須)
- * </p>
- * <p>
- *     前提条件<br>
- *     以下のインタフェースを事前に準備しておくこと。<br>
- *     <code>
- *         public interface KeyInterface&lt;I&gt; {
- *             I getPrimaryKey();
- *         }
- *     </code>
- * </p>
+ *
+ * 注意事項
+ *   defaultModelType="flat"には対応していません。誤ったメソッドが追加されます。
+ *
+ * パラメータ
+ *   interface: implementsするインタフェース名(必須)
+ *
+ * 前提条件
+ *   以下のインタフェースを事前に準備しておくこと。
+ *   public interface KeyInterface&lt;I&gt; {
+ *       I getPrimaryKey();
+ *   }
+ * </pre>
  */
 public class ModelExtendsPrimaryKeyInterfacePlugin extends PluginAdapter {
 

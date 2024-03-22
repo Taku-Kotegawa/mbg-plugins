@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC
+        "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <context id="tables" targetRuntime="MyBatis3" defaultModelType="conditional">
+
+        <!-- ファイルのエンコーディングをUTF-8で固定 -->
+        <property name="javaFileEncoding" value="UTF-8"/>
+
+        <!-- 標準のプラグイン @see https://mybatis.org/generator/reference/plugins.html -->
+
+        <!-- @CacheNamespace アノテーションを追加します -->
+        <!-- <plugin type="org.mybatis.generator.plugins.CacheNamespacePlugin"/> -->
+
+        <!-- 生成された SQL マップに <cache> 要素を追加します -->
+        <!-- <plugin type="org.mybatis.generator.plugins.CachePlugin"/> -->
+
+        <!-- 大文字と小文字を区別しない LIKE 検索をサポートする -->
+        <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
+
+        <!-- Modelクラスにequals, hashCodeメソッドを追加 -->
+        <!-- <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>-->
+
+        <!-- Modelクラスにビルダーメソッドを追加 -->
+        <!--        <plugin type="org.mybatis.generator.plugins.FluentBuilderMethodsPlugin"/>-->
+
+        <!-- @Mapperアノテーションを追加 -->
+        <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin"/>
+
+        <!-- XML マッパー ファイルへの参照を含むスケルトン MapperConfig.xml ファイルを生成 -->
+        <!--        <plugin type="org.mybatis.generator.plugins.MapperConfigPlugin">-->
+        <!--            <property name="targetPackage" value="jp.co.stnet.cms.base.infrastructure.mapper.mbg" />-->
+        <!--            <property name="targetProject" value="src/main/resources" />-->
+        <!--        </plugin>-->
+
+        <!-- Exampleクラスの名前を変更 -->
+        <!-- <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin"/>-->
+
+        <!-- SelectメソッドにRowBoundsを追加 -->
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"/>
+
+        <!-- Modelクラスに implements Serializable を追加 -->
+<!--        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>-->
+
+        <!-- ModelクラスにtoStringメソッドを追加 -->
+        <!-- <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>-->
+
+        <!-- Mapper XML を常に上書き -->
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+
+        <!-- テーブル主キー以外のキー項目を設定のためのプラグイン読込 -->
+        <plugin type="org.mybatis.generator.plugins.VirtualPrimaryKeyPlugin"/>
+
+        <!-- カスタムプラグイン -->
+
+        <!-- lombok -->
+        <plugin type="plugins.ModelLombokPlugin">
+            <property name="builder" value="false"/>
+            <property name="superBuilder" value="true"/>
+            <property name="toString" value="true"/>
+            <property name="EqualsAndHashCode" value="true"/>
+            <property name="allArgsConstructor" value="true"/>
+            <property name="noArgsConstructor" value="true"/>
+        </plugin>
+
+        <!-- lombok @EqualsAndHashCode.Exclude アノテーションを指定したフィールドに設定する -->
+        <plugin type="plugins.AddLombokEqualsAndHashCodeExcludeFieldAnnotationPlugin">
+            <property name="excludeField" value="version,createdBy,createdDate,lastModifiedBy,lastModifiedDate"/>
+        </plugin>
+
+
+        <!-- SQLMapperのUpdate命令から特定の項目を除外, excludeColumnsにテーブル項目名を指定, カンマ区切りで複数指定可能 -->
+        <plugin type="plugins.SqlUpdateExcludeColumnPlugin">
+            <property name="excludeColumns" value="created_date,created_by"/>
+        </plugin>
+
+        <!-- 楽観的排他制御用の更新番号をUpdate時に+1するSQLに変更-->
+        <plugin type="plugins.SqlUpdateVersionPlusOnePlugin">
+            <property name="versionColumns" value="version"/>
+            <property name="maxVersionNum" value="99999999"/>
+            <property name="excludeTable" value="simple_entity_revision"/>
+        </plugin>
+
+        <!-- 楽観的排他制御用メソッド追加 -->
+        <plugin type="plugins.SqlUpdateKeyAndVersionPlugin">
+            <property name="versionColumns" value="version"/>
+        </plugin>
+
+        <!-- MapperインタフェースにGenericインタフェースを追加(インターフェースは手動で準備する前提) -->
+        <!-- 複合主キーテーブルには対応していない -->
+        <plugin type="plugins.CreateGenericInterfacePlugin">
+            <property name="mapper_interface" value="jp.co.stnet.cms.base.infrastructure.mapper.VersionMapperInterface"/>
+<!--            <property name="model_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>-->
+            <property name="target_table" value="simple_entity"/>
+        </plugin>
+
+        <!-- MapperインタフェースにGenericインタフェースを追加(インターフェースは手動で準備する前提) -->
+        <!-- 複合主キーテーブルには対応していない -->
+        <plugin type="plugins.CreateGenericInterfacePlugin">
+            <property name="mapper_interface" value="jp.co.stnet.cms.base.infrastructure.mapper.MapperInterface"/>
+<!--            <property name="model_interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>-->
+            <property name="target_table"
+                      value=""/>
+        </plugin>
+
+
+        <!-- Modelに主キーの値を取得するメソッドと親インタフェースも追加 -->
+        <plugin type="plugins.ModelExtendsPrimaryKeyInterfacePlugin">
+            <property name="interface" value="jp.co.stnet.cms.base.domain.model.KeyInterface"/>
+        </plugin>
+
+
+        <!-- Modelにインタフェースの追加(targetColumnを持つテーブル) -->
+        <plugin type="plugins.BeanImplementation2Plugin">
+            <property name="interfaceName" value="jp.co.stnet.cms.base.domain.model.VersionInterface"/>
+            <property name="targetColumn" value="version"/>
+        </plugin>
+
+        <!-- Modelにインタフェースの追加(targetColumnを持つテーブル) -->
+        <plugin type="plugins.BeanImplementation2Plugin">
+            <property name="interfaceName" value="jp.co.stnet.cms.base.domain.model.StatusInterface"/>
+            <property name="targetColumn" value="status"/>
+        </plugin>
+
+        <!-- フィールドの型に応じたアノテーションを追加 -->
+        <!-- LocalDateTime: @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm:ss")) -->
+        <!-- LocalDate: @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")) -->
+<!--        <plugin type="plugins.AddFieldAnnotationPlugin"/>-->
+
+        <!-- コメントの出力仕様 -->
+        <commentGenerator>
+            <property name="suppressAllComments" value="false"/>
+            <property name="suppressDate" value="true"/>
+            <property name="addRemarkComments" value="true"/>
+        </commentGenerator>
+
+        <!-- データベース接続設定 -->
+        <jdbcConnection
+                driverClass="org.postgresql.Driver"
+                connectionURL="jdbc:postgresql://localhost:5432/cms?currentSchema=cms"
+                userId="admin"
+                password="admin">
+            <property name="remarksReporting" value="true"/><!-- Oracleの場合のみ必要 -->
+        </jdbcConnection>
+
+        <!-- 日付項目をLocalDateTimeにする -->
+        <javaTypeResolver>
+            <property name="useJSR310Types" value="true"/>
+        </javaTypeResolver>
+
+        <!-- Modelクラスの設定 -->
+        <javaModelGenerator
+                targetPackage="jp.co.stnet.cms.example.domain.model.mbg"
+                targetProject="output"/>
+
+        <!-- Mapperインタフェースの設定 -->
+        <sqlMapGenerator
+                targetPackage="jp.co.stnet.cms.example.infrastructure.mapper.mbg"
+                targetProject="output"/>
+
+        <!-- Mapper XMLの設定 -->
+        <javaClientGenerator
+                type="XMLMAPPER"
+                targetPackage="jp.co.stnet.cms.example.infrastructure.mapper.mbg"
+                targetProject="output"/>
+
+        <!-- 対象テーブルの選定 -->
+        <!-- schema: これを指定するとSQLが From schema.table の形になる -->
+
+        <table tableName="simple_entity" domainObjectName="TSimpleEntity">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table>
+        <table tableName="simple_entity_checkbox02" />
+        <table tableName="simple_entity_combobox03"/>
+        <table tableName="simple_entity_line_items" domainObjectName="LineItem"/>
+        <table tableName="simple_entity_select02"/>
+        <table tableName="simple_entity_select04"/>
+        <table tableName="simple_entity_text05"/>
+        <table tableName="v_simple_entity"
+               enableDeleteByExample="false"
+               enableDeleteByPrimaryKey="false"
+               enableInsert="false"
+               enableUpdateByExample="false"
+               enableUpdateByPrimaryKey="false"
+        />
+        <table tableName="t_test" />
+        <table tableName="simple_entity_revision" />
+
+    </context>
+</generatorConfiguration>
